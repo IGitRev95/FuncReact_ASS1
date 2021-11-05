@@ -1,0 +1,64 @@
+{
+"Departments" : [
+{
+ "Department" : "CS",
+"actions":["Open Course", "Open Course", "Open Course", "Add Student","Add Student","Administrative Check"],
+"courseList": ["Intro To CS","Data Structures","SPL"],
+"studentList": ["123456789","5959595959"]
+},
+{
+ "Department" : "Math",
+"actions":["Add Student"],
+"courseList": [],
+"studentList": ["132424353"]
+}
+],
+"Courses" : [
+{
+ "Course" : "Intro To CS",
+"actions":["Participate In Course","Participate In Course"],
+"availableSpots": "198",
+"registered": "2",
+"regStudents": ["123456789","5959595959"],
+"prequisites" :[]
+},
+{
+ "Course" : "SPL",
+"actions":["Participate In Course","Participate In Course"],
+"availableSpots": "0",
+"registered": "1",
+"regStudents": ["5959595959"],
+"prequisites": ["Intro To CS"]
+},
+{
+ "Course" : "Data Structures",
+"actions":["Participate In Course","Unregister"],
+"availableSpots": "100",
+"registered": "0",
+"regStudents": [],
+"prequisites" :["Intro To CS"]
+}
+],
+"Students": [
+{
+  "Student": "123456789",
+  "actions" : [],
+  "grades" : ["(Intro To CS, 77)"
+    ],
+  "signature": "999283"
+},
+{
+   "Student": "5959595959",
+  "actions" : [],
+  "grades" : ["(Intro To CS, 94)", "(SPL,100)"
+    ],
+  "signature": "999283"
+},
+{
+   "Student": "132424353",
+  "actions" : [],
+  "grades" : [],
+  "signature": "0"
+}
+]
+}
