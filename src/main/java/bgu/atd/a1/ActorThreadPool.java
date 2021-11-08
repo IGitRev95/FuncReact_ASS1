@@ -13,7 +13,14 @@ import java.util.Map;
  * methods
  */
 public class ActorThreadPool {
-
+	
+	
+	
+	// TODO: add a dictionary for the actor actions queues:  <String("actorID"),Queue<Action>>
+	// TODO: before "leaving an actor", check its suspended actions queue for fulfilled dependecies and re-insert the action if needed
+	
+	
+	
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
 	 * should not get started until calling to the {@link #start()} method.
