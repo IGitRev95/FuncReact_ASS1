@@ -1,6 +1,7 @@
 package bgu.atd.a1;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 
 /**
  * an abstract class that represents an action that may be executed using the
@@ -14,6 +15,13 @@ import java.util.Collection;
  * @param <R> the action result type
  */
 public abstract class Action<R> {
+
+    private String actionName;
+    private final Promise<R> resultPromise = new Promise<R>();
+    private ActorThreadPool actorPool;
+    private boolean isStarting = true;
+    private final LinkedHashMap<Collection<? extends Action<?>>, callback> actionsToCallbackMap = new LinkedHashMap<Collection<? extends Action<?>>, callback>();
+
 
 	/**
      * start handling the action - note that this method is protected, a thread
@@ -35,9 +43,35 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
+       if (isStarting)
+       {
+           actorPool = pool;
+           start();
+           isStarting = false;
+       }
+       else
+       {
+           for (Collection<? extends Action<?>> actionList : actionsToCallbackMap.keySet()) {
+               if (allAreDone(actionList)) {
+                   actionsToCallbackMap.get(actionList).call();
+                   actionsToCallbackMap.remove(actionList);
+               }
+           }
+       }
+
    }
     
-    
+    private boolean allAreDone(Collection<? extends Action<?>> actionList)
+    {
+        for (Action<?> action : actionList)
+        {
+            if (!action.getResult().isResolved())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * add a callback to be executed once *all* the given actions results are
      * resolved
@@ -45,12 +79,11 @@ public abstract class Action<R> {
      * Implementors note: make sure that the callback is running only once when
      * all the given actions completed.
      *
-     * @param actions
+     * @param actions the actions that need to be run
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+       	actionsToCallbackMap.put(actions, callback);
    
     }
 
@@ -61,8 +94,7 @@ public abstract class Action<R> {
      * @param result - the action calculated result
      */
     protected final void complete(R result) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+       	resultPromise.resolve(result);
    
     }
     
@@ -70,12 +102,11 @@ public abstract class Action<R> {
      * @return action's promise (result)
      */
     public final Promise<R> getResult() {
-    	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    	return resultPromise;
     }
     
     /**
-     * send an action to an other actor
+     * send an action to another actor
      * 
      * @param action
      * 				the action
@@ -85,24 +116,22 @@ public abstract class Action<R> {
 	 * 				actor's private state (actor's information)
      */
 	public void sendMessage(Action<?> action, String actorId, PrivateState actorState){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        actorPool.submit(action, actorId, actorState);
 	}
 	
 	/**
 	 * set action's name
 	 * @param actionName
+     *              the action's name
 	 */
 	public void setActionName(String actionName){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        this.actionName = actionName;
 	}
 	
 	/**
 	 * @return action's name
 	 */
 	public String getActionName(){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return actionName;
 	}
 }
