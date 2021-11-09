@@ -1,4 +1,5 @@
 package bgu.atd.a1;
+import java.util.*;
 
 /**
  * this class represents a deferred result i.e., an object that eventually will
@@ -17,6 +18,10 @@ package bgu.atd.a1;
  */
 public class Promise<T>{
 
+	private boolean isResolved = false;
+	private T result;
+	final private LinkedList<callback> callbacks  = new LinkedList<callback>();
+
 	/**
 	 *
 	 * @return the resolved value if such exists (i.e., if this object has been
@@ -25,9 +30,13 @@ public class Promise<T>{
 	 *             in the case where this method is called and this object is
 	 *             not yet resolved
 	 */
+
 	public T get() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (!isResolved)
+		{
+			throw new IllegalStateException("The promise is not yet resolved.");
+		}
+		return result;
 	}
 
 	/**
@@ -37,8 +46,8 @@ public class Promise<T>{
 	 *         before.
 	 */
 	public boolean isResolved() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+
+		return isResolved;
 	}
 
 
@@ -55,9 +64,17 @@ public class Promise<T>{
 	 * @param value
 	 *            - the value to resolve this promise object with
 	 */
-	public void resolve(T value){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+	public synchronized void resolve(T value){
+		if (isResolved)
+		{
+			throw new IllegalStateException("Already resolved");
+		}
+		isResolved = true;
+
+		while (callbacks.size() > 0 )
+		{
+			callbacks.remove().call();
+		}
 	}
 
 	/**
@@ -74,7 +91,13 @@ public class Promise<T>{
 	 *            the callback to be called when the promise object is resolved
 	 */
 	public void subscribe(callback callback) {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (!isResolved)
+		{
+			callbacks.add(callback);
+		}
+		else
+		{
+			callback.call();
+		}
 	}
 }
