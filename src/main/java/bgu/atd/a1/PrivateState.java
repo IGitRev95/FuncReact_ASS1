@@ -22,8 +22,8 @@ public abstract class PrivateState {
 	 * @param actionName
 	 */
 	public void addRecord(String actionName){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		history.add(actionName);
+//		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 	
 	
