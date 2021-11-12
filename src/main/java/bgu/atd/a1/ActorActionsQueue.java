@@ -17,7 +17,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ActorActionsQueue {
 
-    private final ConcurrentLinkedQueue<? extends Action<?>> actionsQueue = new ConcurrentLinkedQueue<Action<?>>();
+    private final ConcurrentLinkedQueue<Action<?>> actionsQueue = new ConcurrentLinkedQueue<Action<?>>();
+//    private final ConcurrentLinkedQueue<? extends Action<?>> actionsQueue = new ConcurrentLinkedQueue<Action<?>>(); ? extends - problem
     /**
      * Fear of main delivery thread to get stuck upon trying writing to the queue
      * reading and writing should be quick actions so should not be a problem
@@ -35,6 +36,10 @@ public class ActorActionsQueue {
             throw new Exception("Queue is empty");
         }
         throw new Exception("Queue is occupied");
+    }
+
+    public boolean enqueueAction(Action<?> action){
+        return this.actionsQueue.add(action);
     }
 
     private Queue<? extends Action<?>> getActionsQueue() {
