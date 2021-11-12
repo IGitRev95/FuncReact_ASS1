@@ -1,6 +1,9 @@
 package bgu.atd.a1;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * represents an actor thread pool - to understand what this class does please
@@ -14,10 +17,12 @@ import java.util.Map;
  */
 public class ActorThreadPool {
 	
-	
+	private final ConcurrentHashMap<String,? extends PrivateState> ActorsStateMap = new ConcurrentHashMap<String,PrivateState>();
+	private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> ActorSuspendedActionsMap = new ConcurrentHashMap<String,Map<? extends Action<?>, ActionDependencies>>();
+	// ActorSuspendedActionsMap is concurent such
 	
 	// TODO: add a dictionary for the actor actions queues:  <String("actorID"),Queue<Action>> (and suspended actions)
-	// TODO: make dependencies data structure
+	// TODO: make dependencies data structure - actionName , dependencies , isAllResolved
 	// TODO: before "leaving an actor", check its suspended actions queue for fulfilled dependencies and re-insert the action if needed
 	//
 	
