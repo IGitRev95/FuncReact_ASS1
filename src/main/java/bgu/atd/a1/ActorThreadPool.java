@@ -16,9 +16,10 @@ public class ActorThreadPool {
 	
 	
 	
-	// TODO: add a dictionary for the actor actions queues:  <String("actorID"),Queue<Action>>
-	// TODO: before "leaving an actor", check its suspended actions queue for fulfilled dependecies and re-insert the action if needed
-	
+	// TODO: add a dictionary for the actor actions queues:  <String("actorID"),Queue<Action>> (and suspended actions)
+	// TODO: make dependencies data structure
+	// TODO: before "leaving an actor", check its suspended actions queue for fulfilled dependencies and re-insert the action if needed
+	//
 	
 	
 	/**
