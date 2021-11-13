@@ -4,7 +4,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -28,22 +30,44 @@ public class ActorActionsQueue {
 
     private final AtomicBoolean isExecutedNow = new AtomicBoolean(false);
 
+    private final Lock isExecutedNowLock = new ReentrantLock();
+
+//    public boolean()
+
+//TODO modify
     public Queue<? extends Action<?>> tryAcquire() throws Exception {
-        if(this.isExecutedNow.compareAndSet(false,true)){ // queue is free
+        if(this.isExecutedNow.compareAndSet(false,true)){ // queue is free - replace with the try lock if locked allow queue access
             if(!this.actionsQueue.isEmpty()){
                 return getActionsQueue();
             }
             throw new Exception("Queue is empty");
         }
         throw new Exception("Queue is occupied");
+
     }
 
-    public boolean enqueueAction(Action<?> action){
+//    public Queue<? extends Action<?>> tryAcquire() throws Exception {
+//        if(this.isExecutedNow.compareAndSet(false,true)){ // queue is free - replace with the try lock if locked allow queue access
+//            if(!this.actionsQueue.isEmpty()){
+//                return getActionsQueue();
+//            }
+//            throw new Exception("Queue is empty");
+//        }
+//        throw new Exception("Queue is occupied");
+//
+//    }
+
+    public boolean enQueueAction(Action<?> action){ // "free" to always adding actions to the queue
         return this.actionsQueue.add(action);
     }
 
-    private Queue<? extends Action<?>> getActionsQueue() {
+    private Queue<? extends Action<?>> getActionsQueue() { // single method for accessing the actionQ.
         return actionsQueue;
 
     }
+
+    public void releaseActorQueue(){ // so after finishing current execution (to complete or not) release the actor queue for further execution.
+        this.isExecutedNowLock.unlock();
+    }
+
 }
