@@ -2,8 +2,8 @@ package bgu.atd.a1;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Queue;
+import java.util.concurrent.*;
 
 /**
  * represents an actor thread pool - to understand what this class does please
@@ -17,9 +17,12 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ActorThreadPool {
 	
-	private final ConcurrentHashMap<String,? extends PrivateState> ActorsStateMap = new ConcurrentHashMap<String,PrivateState>();
+	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<String,PrivateState>();
+	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<String,ActorActionsQueue>();
 	private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> ActorSuspendedActionsMap = new ConcurrentHashMap<String,Map<? extends Action<?>, ActionDependencies>>();
-	// ActorSuspendedActionsMap is concurent such
+	// TODO: use a self managed thread pool container - explanation in coding notes
+	private final ThreadPoolExecutor executor;
+	private final Collection<Thread> threadPool;
 	
 	// TODO: add a dictionary for the actor actions queues:  <String("actorID"),Queue<Action>> (and suspended actions)
 	// TODO: make dependencies data structure - actionName , dependencies , isAllResolved
@@ -41,7 +44,11 @@ public class ActorThreadPool {
 	 */
 	public ActorThreadPool(int nthreads) {
 		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+		// add the general thread behavior runnable to the executor {nthreas} times. @ActorThreadLoop
+		this.executor = new ThreadPoolExecutor(nthreads,nthreads,0, TimeUnit.SECONDS,workQueue);
+
+		throw new UnsupportedOperationException("Not Finished Yet.");
 	}
 
 	/**
@@ -49,8 +56,7 @@ public class ActorThreadPool {
 	 * @return actors
 	 */
 	public Map<String, PrivateState> getActors(){
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		return this.actors;
 	}
 	
 	/**
@@ -59,8 +65,7 @@ public class ActorThreadPool {
 	 * @return actor's private state
 	 */
 	public PrivateState getPrivateState(String actorId){
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		return this.actors.get(actorId);
 	}
 
 
@@ -76,7 +81,9 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		// TODO: replace method body with real implementation
+		// TODO:should the private state (log) needed to be updated upon action submission or action completion?
+		this.actorsActionQueues.get(actorId).enQueueAction(action);
+		this.actors.get(actorId).addRecord(action.getActionName());
 		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
@@ -92,6 +99,8 @@ public class ActorThreadPool {
 	 */
 	public void shutdown() throws InterruptedException {
 		// TODO: replace method body with real implementation
+		// TODO: update after self managed pool is in use
+		this.executor.shutdown();
 		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
@@ -100,6 +109,11 @@ public class ActorThreadPool {
 	 */
 	public void start() {
 		// TODO: replace method body with real implementation
+		// TODO: update after self managed pool is in use
+		for(int i = 0; i<this.executor.getCorePoolSize(); i++){
+			this.executor.execute(new ActorThreadLoop());
+		}
+
 		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
