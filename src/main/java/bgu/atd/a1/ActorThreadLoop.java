@@ -39,6 +39,12 @@ public class ActorThreadLoop implements Runnable{
             boolean actionExecutionOccurred = false;
             for (String actorID : this.actorsActionQueues.keySet()) // trying to acquire action queue
             {
+                // overall interruption handling mechanism
+                if(Thread.currentThread().isInterrupted()){
+                    this.isInterrupted = true;
+                    break;
+                }
+
                 Queue<? extends Action<?>> actionQ = this.actorsActionQueues.get(actorID).tryAcquire();
                 if (actionQ != null) { // acquired action queue successfully
                     if (actionQ.size() != 0) {
@@ -61,16 +67,12 @@ public class ActorThreadLoop implements Runnable{
 
             }
             // no work available -> wait
-            if (!actionExecutionOccurred) {
+            if (!actionExecutionOccurred && !isInterrupted) {
                 try {
                     this.waitObject.wait();
                 } catch (InterruptedException e) {
                     this.isInterrupted = true;
                 }
-            }
-            // overall interruption handling mechanism
-            if(Thread.currentThread().isInterrupted()){
-                this.isInterrupted = true;
             }
         }
     }
