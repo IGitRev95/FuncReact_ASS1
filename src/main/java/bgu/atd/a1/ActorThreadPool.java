@@ -2,7 +2,6 @@ package bgu.atd.a1;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.*;
 
 /**
@@ -19,7 +18,7 @@ public class ActorThreadPool {
 	
 	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<String,PrivateState>();
 	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<String,ActorActionsQueue>();
-	private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> ActorSuspendedActionsMap = new ConcurrentHashMap<String,Map<? extends Action<?>, ActionDependencies>>();
+	private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> actorSuspendedActionsMap = new ConcurrentHashMap<String,Map<? extends Action<?>, ActionDependencies>>();
 	// TODO: use a self managed thread pool container - explanation in coding notes
 	private final ThreadPoolExecutor executor;
 	private final Collection<Thread> threadPool;
@@ -111,7 +110,7 @@ public class ActorThreadPool {
 		// TODO: replace method body with real implementation
 		// TODO: update after self managed pool is in use
 		for(int i = 0; i<this.executor.getCorePoolSize(); i++){
-			this.executor.execute(new ActorThreadLoop());
+			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, actorSuspendedActionsMap));
 		}
 
 		throw new UnsupportedOperationException("Not Implemented Yet.");
