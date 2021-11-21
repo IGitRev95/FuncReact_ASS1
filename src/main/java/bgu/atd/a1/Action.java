@@ -2,6 +2,7 @@ package bgu.atd.a1;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 /**
  * an abstract class that represents an action that may be executed using the
@@ -19,8 +20,9 @@ public abstract class Action<R> {
     private String actionName;
     private final Promise<R> resultPromise = new Promise<R>();
     private ActorThreadPool actorPool;
-    private boolean isStarting = true;
-    private final LinkedHashMap<Collection<? extends Action<?>>, callback> actionsToCallbackMap = new LinkedHashMap<Collection<? extends Action<?>>, callback>();
+    private boolean firstRun = true; // difference between handle->start and handle->"then"
+    private final HashMap<Collection<? extends Action<?>>, callback> actionsCallbackMap = new LinkedHashMap<Collection<? extends Action<?>>, callback>();
+    //TODO: exchange actionsCallbackMap with map<ActionDependencies, callback>
 
 
 	/**
@@ -43,24 +45,25 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
-       if (isStarting)
+       if (firstRun)
        {
            actorPool = pool;
            start();
-           isStarting = false;
+           firstRun = false;
        }
        else
        {
-           for (Collection<? extends Action<?>> actionList : actionsToCallbackMap.keySet()) {
+           //TODO: use ActionDependencies.isAllResolved()
+           for (Collection<? extends Action<?>> actionList : actionsCallbackMap.keySet()) {
                if (allAreDone(actionList)) {
-                   actionsToCallbackMap.get(actionList).call();
-                   actionsToCallbackMap.remove(actionList);
+                   actionsCallbackMap.get(actionList).call();
+                   actionsCallbackMap.remove(actionList);
                }
            }
        }
 
    }
-    
+    //TODO: remove after previous fix
     private boolean allAreDone(Collection<? extends Action<?>> actionList)
     {
         for (Action<?> action : actionList)
@@ -82,8 +85,10 @@ public abstract class Action<R> {
      * @param actions the actions that need to be run
      * @param callback the callback to execute once all the results are resolved
      */
+
+    //TODO: replace with ActionDependencies
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
-       	actionsToCallbackMap.put(actions, callback);
+       	actionsCallbackMap.put(actions, callback);
    
     }
 
