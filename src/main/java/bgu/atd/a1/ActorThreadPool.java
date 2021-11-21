@@ -21,13 +21,8 @@ public class ActorThreadPool {
 	private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> actorSuspendedActionsMap = new ConcurrentHashMap<String,Map<? extends Action<?>, ActionDependencies>>();
 	// TODO: use a self managed thread pool container - explanation in coding notes
 	private final ThreadPoolExecutor executor;
-	private final Collection<Thread> threadPool;
-	
-	// TODO: add a dictionary for the actor actions queues:  <String("actorID"),Queue<Action>> (and suspended actions)
-	// TODO: make dependencies data structure - actionName , dependencies , isAllResolved
-	// TODO: before "leaving an actor", check its suspended actions queue for fulfilled dependencies and re-insert the action if needed
-	//
-	
+	// TODO : threadPool map - for custom executor;
+
 	
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
@@ -46,8 +41,6 @@ public class ActorThreadPool {
 		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
 		// add the general thread behavior runnable to the executor {nthreas} times. @ActorThreadLoop
 		this.executor = new ThreadPoolExecutor(nthreads,nthreads,0, TimeUnit.SECONDS,workQueue);
-
-		throw new UnsupportedOperationException("Not Finished Yet.");
 	}
 
 	/**
@@ -100,11 +93,10 @@ public class ActorThreadPool {
 		// TODO: replace method body with real implementation
 		// TODO: update after self managed pool is in use
 		this.executor.shutdown();
-		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
 	/**
-	 * start the threads belongs to this thread pool
+	 * start the threads belonging to this thread pool
 	 */
 	public void start() {
 		// TODO: replace method body with real implementation
@@ -113,7 +105,6 @@ public class ActorThreadPool {
 			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, actorSuspendedActionsMap));
 		}
 
-		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
 }
