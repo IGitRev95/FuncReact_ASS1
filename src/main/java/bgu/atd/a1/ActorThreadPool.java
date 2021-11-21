@@ -1,6 +1,5 @@
 package bgu.atd.a1;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -19,11 +18,15 @@ public class ActorThreadPool {
 	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<String,PrivateState>();
 	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<String,ActorActionsQueue>();
 	private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> actorSuspendedActionsMap = new ConcurrentHashMap<String,Map<? extends Action<?>, ActionDependencies>>();
-	// TODO: use a self managed thread pool container - explanation in coding notes
-	private final ThreadPoolExecutor executor;
-	// TODO : threadPool map - for custom executor;
+	private final Object threadWaitObject = new Object();
+	private final ThreadPoolExecutor executor; // TODO: replace with custom
 
-	
+	//TODO:
+	// 1.implement custom executor
+	// 2.update actorThreadPool constructor
+	// 3.update actorThreadPool start
+
+
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
 	 * should not get started until calling to the {@link #start()} method.
@@ -37,7 +40,6 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	public ActorThreadPool(int nthreads) {
-		// TODO: replace method body with real implementation
 		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
 		// add the general thread behavior runnable to the executor {nthreas} times. @ActorThreadLoop
 		this.executor = new ThreadPoolExecutor(nthreads,nthreads,0, TimeUnit.SECONDS,workQueue);
@@ -76,7 +78,7 @@ public class ActorThreadPool {
 		// TODO:should the private state (log) needed to be updated upon action submission or action completion?
 		this.actorsActionQueues.get(actorId).enQueueAction(action);
 		this.actors.get(actorId).addRecord(action.getActionName());
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		this.threadWaitObject.notify();
 	}
 
 	/**
@@ -90,8 +92,6 @@ public class ActorThreadPool {
 	 *             if the thread that shut down the threads is interrupted
 	 */
 	public void shutdown() throws InterruptedException {
-		// TODO: replace method body with real implementation
-		// TODO: update after self managed pool is in use
 		this.executor.shutdown();
 	}
 
@@ -99,10 +99,8 @@ public class ActorThreadPool {
 	 * start the threads belonging to this thread pool
 	 */
 	public void start() {
-		// TODO: replace method body with real implementation
-		// TODO: update after self managed pool is in use
 		for(int i = 0; i<this.executor.getCorePoolSize(); i++){
-			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, actorSuspendedActionsMap));
+			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, actorSuspendedActionsMap, threadWaitObject, this));
 		}
 
 	}

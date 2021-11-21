@@ -1,6 +1,5 @@
 package bgu.atd.a1;
 
-import javax.xml.parsers.FactoryConfigurationError;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
