@@ -1,6 +1,8 @@
 package bgu.atd.a1;
 
+import javax.xml.parsers.FactoryConfigurationError;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -12,20 +14,65 @@ import java.util.concurrent.ConcurrentHashMap;
  * repeat
  *
  * if no actor are available or action queues are empty sleep
- * TODO: insert interruption handling for shutdown
  */
 public class ActorThreadLoop implements Runnable{
     private final ConcurrentHashMap<String,PrivateState> actors;
     private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues;
     private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> actorSuspendedActionsMap;
+    private final Object waitObject;
+    private final ActorThreadPool aTPool;
+    private boolean isInterrupted = false;
 
-    public ActorThreadLoop(ConcurrentHashMap<String, PrivateState> actors, ConcurrentHashMap<String, ActorActionsQueue> actorsActionQueues, ConcurrentHashMap<String, Map<? extends Action<?>, ActionDependencies>> actorSuspendedActionsMap) {
+    public ActorThreadLoop(ConcurrentHashMap<String, PrivateState> actors,
+                           ConcurrentHashMap<String, ActorActionsQueue> actorsActionQueues,
+                           ConcurrentHashMap<String, Map<? extends Action<?>, ActionDependencies>> actorSuspendedActionsMap,
+                           Object waitObject,
+                           ActorThreadPool aTPool) {
         this.actors = actors;
         this.actorsActionQueues = actorsActionQueues;
         this.actorSuspendedActionsMap = actorSuspendedActionsMap;
+        this.waitObject = waitObject;
+        this.aTPool = aTPool;
     }
 
     public void run() {
-        //TODO: implement general actor thread behavior
+        while (!this.isInterrupted){
+            boolean actionExecutionOccurred = false;
+            for (String actorID : this.actorsActionQueues.keySet()) // trying to acquire action queue
+            {
+                Queue<? extends Action<?>> actionQ = this.actorsActionQueues.get(actorID).tryAcquire();
+                if (actionQ != null) { // acquired action queue successfully
+                    if (actionQ.size() != 0) {
+                        actionQ.remove().handle(this.aTPool, actorID, this.actors.get(actorID));
+                        actionExecutionOccurred = true;
+                    }
+                    try {
+                        this.actorsActionQueues.get(actorID).releaseActorQueue();
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                // actor suspended actions handling procedure
+                for (Action<?> suspendedAction : this.actorSuspendedActionsMap.get(actorID).keySet()) {
+                    if (this.actorSuspendedActionsMap.get(actorID).get(suspendedAction).isAllResolved()) {
+                        this.aTPool.submit(suspendedAction, actorID, this.actors.get(actorID)); // submit back to original actor
+                        this.actorSuspendedActionsMap.get(actorID).remove(suspendedAction);
+                    }
+                }
+
+            }
+            // no work available -> wait
+            if (!actionExecutionOccurred) {
+                try {
+                    this.waitObject.wait();
+                } catch (InterruptedException e) {
+                    this.isInterrupted = true;
+                }
+            }
+            // overall interruption handling mechanism
+            if(Thread.currentThread().isInterrupted()){
+                this.isInterrupted = true;
+            }
+        }
     }
 }
