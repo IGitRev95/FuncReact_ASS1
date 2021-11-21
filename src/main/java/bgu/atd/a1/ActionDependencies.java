@@ -13,10 +13,11 @@ public class ActionDependencies {
      * remainingActionCollection - <ActionName, Action> non-resolved action names container
      * allIsResolved - implies which all the dependencies are resolved
      *
+     * TODO: make dependencies data structure - actionName , dependencies , isAllResolved
+     *
      */
 
     private final Collection<Action<?>> dependenciesCollection; // used to store and quick access to the dependencies actions results
-    //    private final Collection<? extends Action> dependenciesCollection; //TODO: check the use of <? extends Action<?>> - empty constructor and add dependency problem related
     private final HashMap<String, Action<?>> remainingActionsCollection; // used to control in remaining dependencies
     private boolean allIsResolved;
 
@@ -41,14 +42,6 @@ public class ActionDependencies {
         resolvedAllCheck();
     }
 
-//    public ActionDependencies(Collection<? extends Action> dependenciesCollection) {
-//        this.dependenciesCollection = dependenciesCollection;
-//        this.remainingActionCollection = new ArrayList<String>();
-//        for (Action action : dependenciesCollection){
-//            this.remainingActionCollection.add(action.getActionName());
-//        }
-//        this.allIsResolved = this.remainingActionCollection.isEmpty();
-//    }
 
     /**
      * add new action to the dependency collection
