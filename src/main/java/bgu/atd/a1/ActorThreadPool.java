@@ -92,7 +92,8 @@ public class ActorThreadPool {
 	 *             if the thread that shut down the threads is interrupted
 	 */
 	public void shutdown() throws InterruptedException {
-		this.executor.shutdown();
+		this.executor.shutdownNow();
+		this.executor.awaitTermination(10,TimeUnit.SECONDS);
 	}
 
 	/**
