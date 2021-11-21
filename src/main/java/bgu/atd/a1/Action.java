@@ -87,6 +87,7 @@ public abstract class Action<R> {
      */
 
     //TODO: replace with ActionDependencies
+    // Add "this" to actor's suspended actions
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
        	actionsCallbackMap.put(actions, callback);
    
