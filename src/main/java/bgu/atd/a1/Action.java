@@ -23,6 +23,7 @@ public abstract class Action<R> {
     private boolean firstRun = true; // difference between handle->start and handle->"then"
     private final HashMap<Collection<? extends Action<?>>, callback> actionsCallbackMap = new LinkedHashMap<Collection<? extends Action<?>>, callback>();
     //TODO: exchange actionsCallbackMap with map<ActionDependencies, callback>
+    //  subscribe to each promise a method that adds action back into the queue if relevant(allResolved)
 
 
 	/**
