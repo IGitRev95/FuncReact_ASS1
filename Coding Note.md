@@ -9,6 +9,5 @@
 - ActorThreadPool have a common wait object which it purpose is that all the waiting threads should be waiting on the same object and could be awakened when a new task is submitted.
 
 # TODO - Remainders:
-- Action final modifying
-- compilation
+- Action final modifying - using self promise.subscribe to check all is resolved and reinserting to actor q if needed 
 - part 2
