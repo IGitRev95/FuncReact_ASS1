@@ -18,12 +18,12 @@ import java.util.HashMap;
 public abstract class Action<R> {
 
     private String actionName;
-    private final Promise<R> resultPromise = new Promise<R>();
-    private ActorThreadPool actorPool;
+    private final Promise<R> resultPromise = new Promise<>();
+    private ActorThreadPool pool;
+    private String actorId;
+    private PrivateState actorState;
     private boolean firstRun = true; // difference between handle->start and handle->"then"
-    private final HashMap<Collection<? extends Action<?>>, callback> actionsCallbackMap = new LinkedHashMap<Collection<? extends Action<?>>, callback>();
-    //TODO: exchange actionsCallbackMap with map<ActionDependencies, callback>
-    //  subscribe to each promise a method that adds action back into the queue if relevant(allResolved)
+    private final HashMap<ActionDependencies, callback> actionsCallbackMap = new LinkedHashMap<>();
 
 
 	/**
@@ -48,34 +48,23 @@ public abstract class Action<R> {
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
        if (firstRun)
        {
-           actorPool = pool;
+           this.pool = pool;
+           this.actorId = actorId;
+           this.actorState = actorState;
            start();
            firstRun = false;
        }
        else
        {
-           //TODO: use ActionDependencies.isAllResolved()
-           for (Collection<? extends Action<?>> actionList : actionsCallbackMap.keySet()) {
-               if (allAreDone(actionList)) {
-                   actionsCallbackMap.get(actionList).call();
-                   actionsCallbackMap.remove(actionList);
+           for (ActionDependencies dependencies : actionsCallbackMap.keySet()) {
+               if (dependencies.isAllResolved()) {
+                   actionsCallbackMap.get(dependencies).call();
+                   actionsCallbackMap.remove(dependencies);
                }
            }
        }
 
    }
-    //TODO: remove after previous fix
-    private boolean allAreDone(Collection<? extends Action<?>> actionList)
-    {
-        for (Action<?> action : actionList)
-        {
-            if (!action.getResult().isResolved())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
     /**
      * add a callback to be executed once *all* the given actions results are
      * resolved
@@ -87,10 +76,17 @@ public abstract class Action<R> {
      * @param callback the callback to execute once all the results are resolved
      */
 
-    //TODO: replace with ActionDependencies
-    // Add "this" to actor's suspended actions
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
-       	actionsCallbackMap.put(actions, callback);
+       	ActionDependencies dependencies = new ActionDependencies(actions);
+        for (Action<?> action : actions) {
+            action.getResult().subscribe(() -> {
+                if (dependencies.isAllResolved())
+                {
+                    sendMessage(this, this.actorId, this.actorState);
+                }
+            });
+        }
+        actionsCallbackMap.put(dependencies, callback);
    
     }
 
@@ -123,7 +119,7 @@ public abstract class Action<R> {
 	 * 				actor's private state (actor's information)
      */
 	public void sendMessage(Action<?> action, String actorId, PrivateState actorState){
-        actorPool.submit(action, actorId, actorState);
+        this.pool.submit(action, actorId, actorState);
 	}
 	
 	/**

@@ -13,11 +13,9 @@ public class ActionDependencies {
      * remainingActionCollection - <ActionName, Action> non-resolved action names container
      * allIsResolved - implies which all the dependencies are resolved
      *
-     * TODO: make dependencies data structure - actionName , dependencies , isAllResolved
-     *
      */
 
-    private final Collection<Action<?>> dependenciesCollection; // used to store and quick access to the dependencies actions results
+    private final Collection<? extends Action<?>> dependenciesCollection; // used to store and quick access to the dependencies actions results
     private final HashMap<String, Action<?>> remainingActionsCollection; // used to control in remaining dependencies
     private boolean allIsResolved;
 
@@ -25,17 +23,17 @@ public class ActionDependencies {
      * empty constructor - creates an empty dependencies collection
      */
     public ActionDependencies() {
-        this.dependenciesCollection = new ArrayList<Action<?>>();
-        this.remainingActionsCollection = new HashMap<String, Action<?>>();
+        this.dependenciesCollection = new ArrayList<>();
+        this.remainingActionsCollection = new HashMap<>();
         resolvedAllCheck();
     }
 
     /**
      * constructor - creates dependencies collection from a give collection
      */
-    public ActionDependencies(Collection<Action<?>> dependenciesCollection) {
+    public ActionDependencies(Collection<? extends Action<?>> dependenciesCollection) {
         this.dependenciesCollection = dependenciesCollection;
-        this.remainingActionsCollection = new HashMap<String, Action<?>>();
+        this.remainingActionsCollection = new HashMap<>();
         for (Action<?> action : dependenciesCollection){
             this.remainingActionsCollection.put(action.getActionName(),action);
         }
@@ -43,19 +41,19 @@ public class ActionDependencies {
     }
 
 
-    /**
-     * add new action to the dependency collection
-     * @param newDependency - the new action as dependency
-     * @return - addition Success bool
-     */
-    public boolean addDependency(Action<?> newDependency){
-        boolean additionSuccess = this.dependenciesCollection.add(newDependency);
-        if(additionSuccess && !newDependency.getResult().isResolved()) {
-            this.remainingActionsCollection.put(newDependency.getActionName(),newDependency);
-            resolvedAllCheck();
-        }
-        return additionSuccess;
-    }
+//    /**
+//     * add new action to the dependency collection
+//     * @param newDependency - the new action as dependency
+//     * @return - addition Success bool
+//     */
+//    public boolean addDependency(Action<?> newDependency){
+//        boolean additionSuccess = this.dependenciesCollection.add(newDependency);
+//        if(additionSuccess && !newDependency.getResult().isResolved()) {
+//            this.remainingActionsCollection.put(newDependency.getActionName(),newDependency);
+//            resolvedAllCheck();
+//        }
+//        return additionSuccess;
+//    }
 
     public Collection<? extends Action<?>> getDependenciesCollection() {
         return dependenciesCollection;
