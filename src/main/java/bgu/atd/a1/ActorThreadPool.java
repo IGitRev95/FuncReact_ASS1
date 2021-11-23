@@ -74,7 +74,6 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		// TODO:should the private state (log) needed to be updated upon action submission or action completion?
 		this.actorsActionQueues.get(actorId).enQueueAction(action);
 		this.threadWaitObject.notify();
 	}
