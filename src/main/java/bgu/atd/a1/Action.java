@@ -98,7 +98,7 @@ public abstract class Action<R> {
      */
     protected final void complete(R result) {
        	resultPromise.resolve(result);
-   
+        this.actorState.addRecord(this.actionName);
     }
     
     /**
