@@ -15,9 +15,8 @@ import java.util.concurrent.*;
  */
 public class ActorThreadPool {
 	
-	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<String,PrivateState>();
-	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<String,ActorActionsQueue>();
-	private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> actorSuspendedActionsMap = new ConcurrentHashMap<String,Map<? extends Action<?>, ActionDependencies>>();
+	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<>();
 	private final Object threadWaitObject = new Object();
 	private final ThreadPoolExecutor executor; // TODO: replace with custom
 
@@ -40,7 +39,7 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	public ActorThreadPool(int nthreads) {
-		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
 		// add the general thread behavior runnable to the executor {nthreas} times. @ActorThreadLoop
 		this.executor = new ThreadPoolExecutor(nthreads,nthreads,0, TimeUnit.SECONDS,workQueue);
 	}
@@ -101,7 +100,7 @@ public class ActorThreadPool {
 	 */
 	public void start() {
 		for(int i = 0; i<this.executor.getCorePoolSize(); i++){
-			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, actorSuspendedActionsMap, threadWaitObject, this));
+			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, threadWaitObject, this));
 		}
 
 	}

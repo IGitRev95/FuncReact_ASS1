@@ -17,19 +17,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ActorThreadLoop implements Runnable{
     private final ConcurrentHashMap<String,PrivateState> actors;
     private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues;
-    private final ConcurrentHashMap<String, Map<? extends Action<?>,ActionDependencies>> actorSuspendedActionsMap;
     private final Object waitObject;
     private final ActorThreadPool aTPool;
     private boolean isInterrupted = false;
 
     public ActorThreadLoop(ConcurrentHashMap<String, PrivateState> actors,
                            ConcurrentHashMap<String, ActorActionsQueue> actorsActionQueues,
-                           ConcurrentHashMap<String, Map<? extends Action<?>, ActionDependencies>> actorSuspendedActionsMap,
                            Object waitObject,
                            ActorThreadPool aTPool) {
         this.actors = actors;
         this.actorsActionQueues = actorsActionQueues;
-        this.actorSuspendedActionsMap = actorSuspendedActionsMap;
         this.waitObject = waitObject;
         this.aTPool = aTPool;
     }
@@ -57,13 +54,7 @@ public class ActorThreadLoop implements Runnable{
                         System.out.println(e.getMessage());
                     }
                 }
-                // actor suspended actions handling procedure
-                for (Action<?> suspendedAction : this.actorSuspendedActionsMap.get(actorID).keySet()) {
-                    if (this.actorSuspendedActionsMap.get(actorID).get(suspendedAction).isAllResolved()) {
-                        this.aTPool.submit(suspendedAction, actorID, this.actors.get(actorID)); // submit back to original actor
-                        this.actorSuspendedActionsMap.get(actorID).remove(suspendedAction);
-                    }
-                }
+
 
             }
             // no work available -> wait
