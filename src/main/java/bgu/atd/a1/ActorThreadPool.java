@@ -2,6 +2,7 @@ package bgu.atd.a1;
 
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * represents an actor thread pool - to understand what this class does please
@@ -19,6 +20,7 @@ public class ActorThreadPool {
 	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<>();
 	private final Object threadWaitObject = new Object();
 	private final ThreadPoolExecutor executor; // TODO: replace with custom
+	private final AtomicInteger submissionCounter;
 
 	//TODO:
 	// 1.implement custom executor
@@ -41,6 +43,7 @@ public class ActorThreadPool {
 	public ActorThreadPool(int nthreads) {
 		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
 		// add the general thread behavior runnable to the executor {nthreas} times. @ActorThreadLoop
+		this.submissionCounter = new AtomicInteger(0);
 		this.executor = new ThreadPoolExecutor(nthreads,nthreads,0, TimeUnit.SECONDS,workQueue);
 	}
 
@@ -75,6 +78,7 @@ public class ActorThreadPool {
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
 		this.actorsActionQueues.get(actorId).enQueueAction(action);
+		this.submissionCounter.getAndIncrement(); //TODO comment
 		this.threadWaitObject.notify();
 	}
 
@@ -98,7 +102,7 @@ public class ActorThreadPool {
 	 */
 	public void start() {
 		for(int i = 0; i<this.executor.getCorePoolSize(); i++){
-			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, threadWaitObject, this));
+			this.executor.execute(new ActorThreadLoop(actors, actorsActionQueues, threadWaitObject, this, this.submissionCounter));
 		}
 
 	}

@@ -3,6 +3,7 @@ package bgu.atd.a1;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The general thread loop behavior:
@@ -20,15 +21,18 @@ public class ActorThreadLoop implements Runnable{
     private final Object waitObject;
     private final ActorThreadPool aTPool;
     private boolean isInterrupted = false;
+    private final AtomicInteger actorThreadPoolSubmissionCounter;
 
     public ActorThreadLoop(ConcurrentHashMap<String, PrivateState> actors,
                            ConcurrentHashMap<String, ActorActionsQueue> actorsActionQueues,
                            Object waitObject,
-                           ActorThreadPool aTPool) {
+                           ActorThreadPool aTPool,
+                           AtomicInteger submittingCounter) {
         this.actors = actors;
         this.actorsActionQueues = actorsActionQueues;
         this.waitObject = waitObject;
         this.aTPool = aTPool;
+        this.actorThreadPoolSubmissionCounter = submittingCounter;
     }
 
     public void run() {
@@ -47,6 +51,7 @@ public class ActorThreadLoop implements Runnable{
                     if (actionQ.size() != 0) {
                         actionQ.remove().handle(this.aTPool, actorID, this.actors.get(actorID));
                         actionExecutionOccurred = true;
+                        this.actorThreadPoolSubmissionCounter.decrementAndGet();
                     }
                     try {
                         this.actorsActionQueues.get(actorID).releaseActorQueue();
@@ -58,7 +63,7 @@ public class ActorThreadLoop implements Runnable{
 
             }
             // no work available -> wait
-            if (!actionExecutionOccurred && !isInterrupted) {
+            if (!actionExecutionOccurred && !isInterrupted && this.actorThreadPoolSubmissionCounter.get() == 0) {
                 try {
                     this.waitObject.wait();
                 } catch (InterruptedException e) {
