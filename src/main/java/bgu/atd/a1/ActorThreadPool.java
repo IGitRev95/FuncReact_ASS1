@@ -77,6 +77,9 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
+		if(!this.actors.containsKey(actorId)){
+			boolean newActorAdditionSuccession = this.addNewActor(actorId,actorState);
+		}
 		this.actorsActionQueues.get(actorId).enQueueAction(action);
 		this.submissionCounter.getAndIncrement(); //TODO comment
 		this.threadWaitObject.notify();
@@ -107,4 +110,7 @@ public class ActorThreadPool {
 
 	}
 
+	private boolean addNewActor(String actorID,PrivateState actorState){
+		return (this.actors.putIfAbsent(actorID, actorState) == null) & (this.actorsActionQueues.putIfAbsent(actorID, new ActorActionsQueue()) == null);
+	}
 }
