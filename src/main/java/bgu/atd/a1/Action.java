@@ -21,7 +21,7 @@ public abstract class Action<R> {
     private final Promise<R> resultPromise = new Promise<>();
     private ActorThreadPool pool;
     private String actorId;
-    private PrivateState actorState;
+    protected PrivateState actorState;
     private boolean firstRun = true; // difference between handle->start and handle->"then"
     private final HashMap<ActionDependencies, callback> actionsCallbackMap = new LinkedHashMap<>();
 
