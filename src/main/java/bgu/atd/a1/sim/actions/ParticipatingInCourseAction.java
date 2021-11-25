@@ -5,6 +5,9 @@ import bgu.atd.a1.Action;
 public class ParticipatingInCourseAction extends Action<Boolean> {
     private final String studentName;
     private final Integer studentGrade;
+    //TODO:
+    // Check prequisiotions
+    // Check open course ( spots!=-1 )
 
     public ParticipatingInCourseAction(String studentName) {
         this.studentName = studentName;
