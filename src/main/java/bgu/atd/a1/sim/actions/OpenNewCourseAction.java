@@ -7,6 +7,10 @@ import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Opens a new course in a specified department.
+ * Should be initially submitted to the Department's actor.
+ */
 public class OpenNewCourseAction extends Action<Boolean> {
     private final String courseName;
     private final Integer availableSpots;
