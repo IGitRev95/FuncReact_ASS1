@@ -28,7 +28,6 @@ public class OpenNewCourseAction extends Action<Boolean> {
             NewCourseInitAction newCourseInitAction = new NewCourseInitAction(this.availableSpots, this.prequisites);
             sendMessage(newCourseInitAction,this.courseName, newCoursePS);
             this.complete(true);
-        }else{this.complete(false);}
-
+        }else{this.complete(false);} // False - means this course existed previously to this request
     }
 }
