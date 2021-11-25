@@ -11,3 +11,6 @@
 # TODO - Remainders:
 - Action final modifying - using self promise.subscribe to check all is resolved and reinserting to actor q if needed 
 - part 2
+
+#Q?
+should we use meaningful results strings in case the result is not a critical computation value?
