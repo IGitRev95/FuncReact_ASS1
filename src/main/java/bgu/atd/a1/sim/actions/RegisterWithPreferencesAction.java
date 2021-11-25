@@ -6,6 +6,12 @@ import bgu.atd.a1.sim.privateStates.CoursePrivateState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The student supply a list of courses he is interested in them, and wish to register
+ * for ONLY one course of them. The courses are ordered by preference. That is, if he succeed to register for
+ * the course with the highest preference it will not try to register for the rest, otherwise it will try to register
+ * for the second one, and so on. At the end, he will register for at most one course.
+ */
 public class RegisterWithPreferencesAction extends Action<Boolean> {
     private final List<String> coursePreferenceList;
     private final List<Integer> suppliedGrades;
