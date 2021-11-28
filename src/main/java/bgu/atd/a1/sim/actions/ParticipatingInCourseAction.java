@@ -1,6 +1,11 @@
 package bgu.atd.a1.sim.actions;
 
 import bgu.atd.a1.Action;
+import bgu.atd.a1.sim.privateStates.CoursePrivateState;
+import bgu.atd.a1.sim.privateStates.StudentPrivateState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Registers a student to the course, if succeeds, adds the course to the grades-sheet of the student
@@ -17,6 +22,7 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
     public ParticipatingInCourseAction(String studentName) {
         this.studentName = studentName;
         this.studentGrade = null;
+        this.setActionName("ParticipatingInCourseAction");
     }
 
     public ParticipatingInCourseAction(String studentName, Integer studentGrade) {
@@ -26,6 +32,24 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
 
     @Override
     protected void start() {
-
+        CoursePrivateState coursePS = (CoursePrivateState)this.actorState;
+        if (coursePS.getAvailableSpots() <= 0 || coursePS.getRegStudents().contains(this.studentName)){
+            complete(false);
+        }
+        else {
+            AddToGradeSheetAction addToGSAction = new AddToGradeSheetAction(this.actorId, this.studentGrade);
+            List<Action<Boolean>> actions = new ArrayList<>();
+            actions.add(addToGSAction);
+            then(actions, () -> {
+                if(actions.get(0).getResult().get()){
+                    coursePS.setAvailableSpots(coursePS.getAvailableSpots() -1);
+                    coursePS.setRegistered(coursePS.getRegistered()+1);
+                    coursePS.getRegStudents().add(this.studentName);
+                    this.complete(true);
+                }
+                else {this.complete(false);}
+            });
+            this.sendMessage(addToGSAction, this.studentName, new StudentPrivateState());
+        }
     }
 }
