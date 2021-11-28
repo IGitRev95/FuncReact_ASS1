@@ -1,6 +1,7 @@
 package bgu.atd.a1.sim.actions;
 
 import bgu.atd.a1.Action;
+import bgu.atd.a1.sim.privateStates.StudentPrivateState;
 
 public class SetSignatureAction extends Action<Boolean> {
 
@@ -13,6 +14,7 @@ public class SetSignatureAction extends Action<Boolean> {
 
     @Override
     protected void start() {
-//TODO: implement
+        StudentPrivateState studentPS = (StudentPrivateState) this.actorState;
+        complete(true);
     }
 }

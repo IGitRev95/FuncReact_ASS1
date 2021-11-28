@@ -26,13 +26,13 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
         GetComputerAction getComp = new GetComputerAction();
         List<GetComputerAction> actions = new ArrayList<>();
         actions.add(getComp);
-        then(actions, ()-> {
+        then(actions, ()-> { //waiting until a computer is available
             Computer comp = actions.get(0).getResult().get();
            for (String student : departmentPS.getStudentList()){
                getGSActions.put(student, new GetGradeSheetAction());
            }
            Collection<GetGradeSheetAction> gradeSheets = getGSActions.values();
-           then(gradeSheets, () -> {
+           then(gradeSheets, () -> { //getting all gradeSheets from all students
                for (String student : getGSActions.keySet()) {
                    SetSignatureAction setSigAction = new SetSignatureAction(
                            comp.checkAndSign(obligations, getGSActions.get(student).getResult().get()));
