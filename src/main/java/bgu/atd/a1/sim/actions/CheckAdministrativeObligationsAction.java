@@ -2,6 +2,7 @@ package bgu.atd.a1.sim.actions;
 
 import bgu.atd.a1.Action;
 import bgu.atd.a1.sim.Computer;
+import bgu.atd.a1.sim.Warehouse;
 import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
 import bgu.atd.a1.sim.privateStates.StudentPrivateState;
 
@@ -38,9 +39,10 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
                            comp.checkAndSign(obligations, getGSActions.get(student).getResult().get()));
                    this.sendMessage(setSigAction,student, new StudentPrivateState());
                }
+               this.complete(true);
            });
         });
-
+        this.sendMessage(getComp, "Warehouse", new Warehouse());
 
     }
 }
