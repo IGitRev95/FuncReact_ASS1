@@ -39,6 +39,8 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
                            comp.checkAndSign(obligations, getGSActions.get(student).getResult().get()));
                    this.sendMessage(setSigAction,student, new StudentPrivateState());
                }
+               ReleaseComputerAction releaseComp = new ReleaseComputerAction(comp);
+               this.sendMessage(releaseComp, "Warehouse", new Warehouse());
                this.complete(true);
            });
         });
