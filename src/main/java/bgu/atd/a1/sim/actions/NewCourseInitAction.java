@@ -2,7 +2,6 @@ package bgu.atd.a1.sim.actions;
 
 import bgu.atd.a1.Action;
 import bgu.atd.a1.sim.privateStates.CoursePrivateState;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 
