@@ -4,19 +4,24 @@
  * and open the template in the editor.
  */
 package bgu.atd.a1.sim;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashMap;
 
 import bgu.atd.a1.ActorThreadPool;
 import bgu.atd.a1.PrivateState;
+import com.google.gson.*;
+
 
 /**
  * A class describing the simulator for part 2 of the assignment
  */
 public class Simulator {
 
-	
 	public static ActorThreadPool actorThreadPool;
-	
+	private static String inputJsonPath;
+	private static Gson gson;
+
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
@@ -31,8 +36,7 @@ public class Simulator {
 	* @param myActorThreadPool - the ActorThreadPool which will be used by the simulator
 	*/
 	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		actorThreadPool=myActorThreadPool;
 	}
 	
 	/**
@@ -40,13 +44,33 @@ public class Simulator {
 	* returns list of private states
 	*/
 	public static HashMap<String,PrivateState> end(){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		try {
+			actorThreadPool.shutdown();
+		}catch (InterruptedException ignored){}
+		return new HashMap<>(actorThreadPool.getActors()); // new Hashmap due to incompatible types
 	}
 	
 	
-	public static int main(String [] args){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+	public static int main(String [] args) throws FileNotFoundException {
+		init(args[0]);
+
+		//Json Parsing
+		ThreadAmountExtraction inputJson = gson.fromJson(new FileReader( inputJsonPath ), ThreadAmountExtraction.class);
+		attachActorThreadPool(new ActorThreadPool(inputJson.threads));
+
+		return 0;
 	}
+
+	private static class ThreadAmountExtraction {
+		private int threads = 0;
+	}
+
+	private static void init(String inputPath){
+		inputJsonPath=inputPath;
+		gson = new GsonBuilder().setPrettyPrinting().create();
+	}
+
+//	private static class ThreadAmountExtraction {
+//		private int threads = 0;
+//	}
 }
