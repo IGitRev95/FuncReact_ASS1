@@ -45,7 +45,6 @@ public class Simulator {
 				this.complete(true);
 			}
 		}, "Warehouse", new Warehouse(warehouseComputers));
-//		System.out.println(((Warehouse)end().get("Warehouse")).getComputersUsage());
 		System.out.println("start p1");
 		runPhase1(parsedJson);
 
@@ -62,7 +61,6 @@ public class Simulator {
 			@Override
 			protected void start() {
 				then(actionArrayList,()->{
-//					System.out.println(end().keySet());
 					System.out.println("start p2");
 					runPhase2(parsedJson);
 					this.complete(true);
@@ -119,7 +117,7 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
 				break;
 			case "Participate In Course":
-				action =  new ParticipatingInCourseAction(rawAction.student);
+				action =  new ParticipatingInCourseAction(rawAction.student, rawAction.grade[0]);
 				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
 				break;
 			case "Unregister":
@@ -139,7 +137,7 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
 				break;
 			case "Register With Preferences":
-				action =  new RegisterWithPreferencesAction(Arrays.asList(rawAction.conditions),Arrays.asList(rawAction.Grade));
+				action =  new RegisterWithPreferencesAction(Arrays.asList(rawAction.conditions),Arrays.asList(rawAction.grade));
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState()); //TODO check actor
 				break;
 		}
@@ -183,7 +181,7 @@ public class Simulator {
 		private int threads = 0;
 	}
 
-	private static void init(String inputPath) throws FileNotFoundException {
+	private static void init(String inputPath){
 		inputJsonPath = inputPath;
 		gson = new GsonBuilder().setPrettyPrinting().create();
 	}
@@ -220,7 +218,7 @@ public class Simulator {
 		@SerializedName("Student")
 		private String student;
 		@SerializedName("Grade")
-		private Integer[] Grade;
+		private Integer[] grade;
 		@SerializedName("Conditions")
 		private String[] conditions;
 		@SerializedName("Students")
