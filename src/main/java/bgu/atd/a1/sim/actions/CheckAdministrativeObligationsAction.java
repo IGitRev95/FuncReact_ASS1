@@ -14,10 +14,13 @@ import java.util.List;
 public class CheckAdministrativeObligationsAction extends Action<Boolean> {
 
     private final List<String> obligations;
+    private final List<String> students;
 
-    public CheckAdministrativeObligationsAction(List<String> obligations) {
-        this.obligations = obligations;
+    //TODO add Student list
+    public CheckAdministrativeObligationsAction(List<String> obligations,List<String> students) {
         this.setActionName("CheckAdministrativeObligationsAction");
+        this.obligations = obligations;
+        this.students=students;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
         actions.add(getComp);
         then(actions, ()-> { //waiting until a computer is available
             Computer comp = actions.get(0).getResult().get();
-           for (String student : departmentPS.getStudentList()){
+           for (String student : this.students){
                getGSActions.put(student, new GetGradeSheetAction());
            }
            Collection<GetGradeSheetAction> gradeSheets = getGSActions.values();
