@@ -6,10 +6,16 @@
 package bgu.atd.a1.sim;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
+import bgu.atd.a1.Action;
 import bgu.atd.a1.ActorThreadPool;
 import bgu.atd.a1.PrivateState;
+import bgu.atd.a1.sim.actions.*;
+import bgu.atd.a1.sim.privateStates.CoursePrivateState;
+import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 
@@ -28,7 +34,61 @@ public class Simulator {
 	*/
     public static void start() throws FileNotFoundException {
 		ParsedJson parsedJson = gson.fromJson(new FileReader( inputJsonPath ), ParsedJson.class);
+		HashMap<Computer,Boolean> warehouseComputers = new HashMap<>();
+		for(ComputerRawJson comp: parsedJson.computers){
+			warehouseComputers.put(new Computer(comp.type, comp.sigFail, comp.sigSuccess ),false);
+		}
+		actorThreadPool.submit(new Action<Boolean>() {
+			@Override
+			protected void start() {
+				this.complete(true);
+			}
+		}, "Warehouse", new Warehouse(warehouseComputers));
+
+		ArrayList<Action<?>> actionArrayList = new ArrayList<>();
+		for(RawAction rawAction: parsedJson.phase1){
+			actionArrayList.add(buildNSendAction(rawAction));
+		}
     }
+
+	private static Action<?> buildNSendAction(RawAction rawAction){
+		Action<?> action = null;
+		switch (rawAction.actionName){
+			case "Open Course":
+				action = new OpenNewCourseAction(rawAction.course, rawAction.space, Arrays.asList(rawAction.prerequisites));
+				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
+				break;
+			case "Add Student":
+				action =  new AddStudentAction(rawAction.student);
+				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
+				break;
+			case "Participate In Course":
+				action =  new ParticipatingInCourseAction(rawAction.student);
+				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
+				break;
+			case "Unregister":
+				action =  new UnregisterAction(rawAction.student);
+				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
+				break;
+			case "Close Course":
+				action =  new CloseCourseAction();
+				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
+				break;
+			case "Open New Places":
+				action =  new OpenNewPlacesInACourseAction(rawAction.space);
+				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
+				break;
+			case "Administrative Check":
+				action =  new CheckAdministrativeObligationsAction(Arrays.asList(rawAction.conditions),Arrays.asList(rawAction.students));
+				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
+				break;
+			case "Register With Preferences":
+				action =  new RegisterWithPreferencesAction(Arrays.asList(rawAction.conditions),Arrays.asList(rawAction.Grade));
+				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState()); //TODO check actor
+				break;
+		}
+		return action;
+	}
 	
 	/**
 	* attach an ActorThreadPool to the Simulator, this ActorThreadPool will be used to run the simulation
@@ -76,11 +136,11 @@ public class Simulator {
 		@SerializedName("Computers")
 		private ComputerRawJson[] computers;
 		@SerializedName("Phase 1")
-		private Action[] phase1;
+		private RawAction[] phase1;
 		@SerializedName("Phase 2")
-		private Action[] phase2;
+		private RawAction[] phase2;
 		@SerializedName("Phase 3")
-		private Action[] phase3;
+		private RawAction[] phase3;
 	}
 	private static class ComputerRawJson {
 		@SerializedName("Type")
@@ -90,7 +150,7 @@ public class Simulator {
 		@SerializedName("Sig Fail")
 		private long sigFail;
 	}
-	private class Action{
+	private class RawAction {
 		@SerializedName("Action")
 		private String actionName;
 		@SerializedName("Department")
@@ -98,16 +158,19 @@ public class Simulator {
 		@SerializedName("Course")
 		private String course;
 		@SerializedName("Space")
-		private int space;
+		private Integer space;
 		@SerializedName("Prerequisites")
 		private String[] prerequisites;
 		@SerializedName("Student")
 		private String student;
 		@SerializedName("Grade")
-		private int[] Grade;
+		private Integer[] Grade;
 		@SerializedName("Conditions")
 		private String[] conditions;
-
+		@SerializedName("Students")
+		private String[] students;
+		@SerializedName("Courses")
+		private String[] courses;
 	}
 
 }
