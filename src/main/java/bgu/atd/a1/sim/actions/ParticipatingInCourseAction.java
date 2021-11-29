@@ -20,9 +20,9 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
     // Check open course ( spots!=-1 )
 
     public ParticipatingInCourseAction(String studentName) {
+        this.setActionName("ParticipatingInCourseAction");
         this.studentName = studentName;
         this.studentGrade = null;
-        this.setActionName("ParticipatingInCourseAction");
     }
 
     public ParticipatingInCourseAction(String studentName, Integer studentGrade) {

@@ -17,6 +17,7 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
     private final List<Integer> suppliedGrades;
 
     public RegisterWithPreferencesAction(List<String> coursePreferenceList) {
+        this.setActionName("RegisterWithPreferencesAction");
         this.coursePreferenceList = coursePreferenceList;
         this.suppliedGrades = null;
     }

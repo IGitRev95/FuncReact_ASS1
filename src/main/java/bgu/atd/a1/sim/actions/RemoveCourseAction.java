@@ -8,9 +8,8 @@ public class RemoveCourseAction extends Action<Boolean> {
     private final String courseName;
 
     public RemoveCourseAction(String courseName) {
-
-        this.courseName = courseName;
         this.setActionName("RemoveCourseAction");
+        this.courseName = courseName;
     }
 
     @Override

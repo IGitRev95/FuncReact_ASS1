@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GetComputerAction extends Action<Computer> {
+    public GetComputerAction() {
+        this.setActionName("GetComputerAction");
+    }
+
     @Override
     protected void start() {
         //TODO: TEST
