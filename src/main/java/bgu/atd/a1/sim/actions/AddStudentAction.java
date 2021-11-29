@@ -24,8 +24,6 @@ public class AddStudentAction extends Action<Boolean> {
         List<String> departmentStudentList = ((DepartmentPrivateState)this.actorState).getStudentList();
         if(!departmentStudentList.contains(this.studentName)){
             departmentStudentList.add(this.studentName);
-//            StudentPrivateState newStudentPS = new StudentPrivateState();
-//            sendMessage(actorInit,this.studentName, newCoursePS);//TODO should we create the student actor ahead of time or just when the first message is submitted to it?
             this.complete(true);
         }else{this.complete(false);} // False - means this student existed previously to this request
     }
