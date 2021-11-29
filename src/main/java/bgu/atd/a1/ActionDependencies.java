@@ -40,21 +40,6 @@ public class ActionDependencies {
         resolvedAllCheck();
     }
 
-
-//    /**
-//     * add new action to the dependency collection
-//     * @param newDependency - the new action as dependency
-//     * @return - addition Success bool
-//     */
-//    public boolean addDependency(Action<?> newDependency){
-//        boolean additionSuccess = this.dependenciesCollection.add(newDependency);
-//        if(additionSuccess && !newDependency.getResult().isResolved()) {
-//            this.remainingActionsCollection.put(newDependency.getActionName(),newDependency);
-//            resolvedAllCheck();
-//        }
-//        return additionSuccess;
-//    }
-
     public Collection<? extends Action<?>> getDependenciesCollection() {
         return dependenciesCollection;
     }
