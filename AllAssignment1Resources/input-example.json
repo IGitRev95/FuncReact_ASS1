@@ -1,0 +1,101 @@
+{
+"threads": 8,
+"Computers" : [
+{
+"Type":"A",
+"Sig Success": "1234666",
+"Sig Fail": "999283"
+},
+{
+"Type":"B",
+"Sig Success": "4424232",
+"Sig Fail": "5555353"
+}
+],
+"Phase 1" : [
+{
+"Action":"Open Course",
+"Department": "CS",
+"Course": "Intro To CS",
+"Space": "200",
+"Prerequisites" : []
+},
+{
+"Action":"Open Course",
+"Department": "CS",
+"Course": "SPL",
+"Space": "1",
+"Prerequisites" : ["Intro To CS"]
+},
+{
+"Action":"Open Course",
+"Department": "CS",
+"Course": "Data Structures",
+"Space": "100",
+"Prerequisites" :  ["Intro To CS"]
+},
+{
+"Action": "Add Student",
+"Department": "CS",
+"Student": "123456789"
+},
+{
+"Action": "Add Student",
+"Department": "CS",
+"Student": "5959595959"
+}
+],
+"Phase 2" : [
+{
+"Action": "Add Student",
+"Department": "Math",
+"Student": "132424353"
+},
+
+{
+"Action": "Participate In Course",
+"Student": "123456789",
+"Course": "Intro To CS",
+"Grade": ["77"]
+},
+
+{
+"Action": "Participate In Course",
+"Student": "5959595959",
+"Course": "Intro To CS",
+"Grade": ["94"]
+}
+],
+"Phase 3": [
+{
+"Action": "Participate In Course",
+"Student": "123456789",
+"Course": "SPL",
+"Grade": ["98"]
+},
+{
+"Action": "Participate In Course",
+"Student": "123456789",
+"Course": "Data Structures",
+"Grade": ["90"]
+},
+{
+"Action": "Participate In Course",
+"Student": "5959595959",
+"Course": "SPL",
+"Grade": ["100"]
+},
+{
+"Action": "Unregister",
+"Student": "123456789",
+"Course": "Data Structures"
+},
+{
+"Action" : "Administrative Check",
+"Department": "CS",
+"Students": ["123456789","5959595959"],
+"Computer": "A",
+"Conditions" : ["SPL", "Data Structures"]
+}
+]
+}
