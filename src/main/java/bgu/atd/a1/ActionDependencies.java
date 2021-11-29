@@ -3,6 +3,7 @@ package bgu.atd.a1;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 //TODO: Build Tests
 
@@ -50,7 +51,8 @@ public class ActionDependencies {
      */
     public boolean isAllResolved(){ // changed cause of flow constrains
         if(!this.allIsResolved){
-            for (String actionName : this.remainingActionsCollection.keySet()){
+            List<String> remainActionNames = new ArrayList<>(this.remainingActionsCollection.keySet());
+            for (String actionName : remainActionNames){
                 if(this.remainingActionsCollection.get(actionName).getResult().isResolved()){
                     this.remainingActionsCollection.remove(actionName);
                 }
