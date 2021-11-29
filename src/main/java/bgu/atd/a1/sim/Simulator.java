@@ -11,6 +11,7 @@ import java.util.HashMap;
 import bgu.atd.a1.ActorThreadPool;
 import bgu.atd.a1.PrivateState;
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 
 
 /**
@@ -25,9 +26,8 @@ public class Simulator {
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
-    public static void start(){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+    public static void start() throws FileNotFoundException {
+		ParsedJson parsedJson = gson.fromJson(new FileReader( inputJsonPath ), ParsedJson.class);
     }
 	
 	/**
@@ -51,26 +51,63 @@ public class Simulator {
 	}
 	
 	
-	public static int main(String [] args) throws FileNotFoundException {
+	public static void main(String [] args) throws FileNotFoundException {
 		init(args[0]);
 
 		//Json Parsing
 		ThreadAmountExtraction inputJson = gson.fromJson(new FileReader( inputJsonPath ), ThreadAmountExtraction.class);
 		attachActorThreadPool(new ActorThreadPool(inputJson.threads));
 
-		return 0;
+		start();
+
+//		return 0;
 	}
 
 	private static class ThreadAmountExtraction {
 		private int threads = 0;
 	}
 
-	private static void init(String inputPath){
-		inputJsonPath=inputPath;
+	private static void init(String inputPath) throws FileNotFoundException {
+		inputJsonPath = inputPath;
 		gson = new GsonBuilder().setPrettyPrinting().create();
 	}
 
-//	private static class ThreadAmountExtraction {
-//		private int threads = 0;
-//	}
+	private static class ParsedJson {
+		@SerializedName("Computers")
+		private ComputerRawJson[] computers;
+		@SerializedName("Phase 1")
+		private Action[] phase1;
+		@SerializedName("Phase 2")
+		private Action[] phase2;
+		@SerializedName("Phase 3")
+		private Action[] phase3;
+	}
+	private static class ComputerRawJson {
+		@SerializedName("Type")
+		private String type;
+		@SerializedName("Sig Success")
+		private long sigSuccess;
+		@SerializedName("Sig Fail")
+		private long sigFail;
+	}
+	private class Action{
+		@SerializedName("Action")
+		private String actionName;
+		@SerializedName("Department")
+		private String department;
+		@SerializedName("Course")
+		private String course;
+		@SerializedName("Space")
+		private int space;
+		@SerializedName("Prerequisites")
+		private String[] prerequisites;
+		@SerializedName("Student")
+		private String student;
+		@SerializedName("Grade")
+		private int[] Grade;
+		@SerializedName("Conditions")
+		private String[] conditions;
+
+	}
+
 }
