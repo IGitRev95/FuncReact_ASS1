@@ -33,6 +33,7 @@ public class Simulator {
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
     public static void start() throws FileNotFoundException {
+		actorThreadPool.start();
 		ParsedJson parsedJson = gson.fromJson(new FileReader( inputJsonPath ), ParsedJson.class);
 		HashMap<Computer,Boolean> warehouseComputers = new HashMap<>();
 		for(ComputerRawJson comp: parsedJson.computers){
@@ -44,12 +45,66 @@ public class Simulator {
 				this.complete(true);
 			}
 		}, "Warehouse", new Warehouse(warehouseComputers));
+//		System.out.println(((Warehouse)end().get("Warehouse")).getComputersUsage());
+		System.out.println("start p1");
+		runPhase1(parsedJson);
 
+    }
+
+	private static void runPhase1(ParsedJson parsedJson)
+	{
 		ArrayList<Action<?>> actionArrayList = new ArrayList<>();
 		for(RawAction rawAction: parsedJson.phase1){
 			actionArrayList.add(buildNSendAction(rawAction));
 		}
-    }
+
+		actorThreadPool.submit(new Action<Boolean>() {
+			@Override
+			protected void start() {
+				then(actionArrayList,()->{
+					System.out.println(end().keySet());
+					System.out.println("start p2");
+//					runPhase2(parsedJson);
+					this.complete(true);
+				});
+			}
+		}, "Warehouse", new Warehouse()); // arbitrary target actor
+	}
+
+	private static void runPhase2(ParsedJson parsedJson)
+	{
+		ArrayList<Action<?>> actionArrayList = new ArrayList<>();
+		for(RawAction rawAction: parsedJson.phase2){
+			actionArrayList.add(buildNSendAction(rawAction));
+		}
+		System.out.println("Finished sending P2 actions");
+		actorThreadPool.submit(new Action<Boolean>() {
+			@Override
+			protected void start() {
+				then(actionArrayList,()->{
+					System.out.println("start p3");
+					runPhase3(parsedJson);
+					this.complete(true);
+				});
+			}
+		}, "Warehouse", new Warehouse()); // arbitrary target actor
+	}
+	private static void runPhase3(ParsedJson parsedJson)
+	{
+		ArrayList<Action<?>> actionArrayList = new ArrayList<>();
+		for(RawAction rawAction: parsedJson.phase3){
+			actionArrayList.add(buildNSendAction(rawAction));
+		}
+		actorThreadPool.submit(new Action<Boolean>() {
+			@Override
+			protected void start() {
+				then(actionArrayList,()->{
+					System.out.println(end());
+					this.complete(true);
+				});
+			}
+		}, "Warehouse", new Warehouse()); // arbitrary target actor
+	}
 
 	private static Action<?> buildNSendAction(RawAction rawAction){
 		Action<?> action = null;
