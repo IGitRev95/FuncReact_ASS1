@@ -20,7 +20,7 @@ public class Promise<T>{
 
 	private boolean isResolved = false;
 	private T result;
-	final private LinkedList<callback> callbacks  = new LinkedList<callback>();
+	final private LinkedList<callback> callbacks  = new LinkedList<>();
 
 	/**
 	 *
@@ -69,6 +69,7 @@ public class Promise<T>{
 		{
 			throw new IllegalStateException("Already resolved");
 		}
+		result = value;
 		isResolved = true;
 
 		while (callbacks.size() > 0 )
