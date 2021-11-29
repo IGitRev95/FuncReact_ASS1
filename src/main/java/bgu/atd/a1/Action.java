@@ -48,6 +48,7 @@ public abstract class Action<R> {
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
        if (firstRun)
        {
+           System.out.println("running a task - " + this.getActionName());
            this.pool = pool;
            this.actorId = actorId;
            this.actorState = actorState;

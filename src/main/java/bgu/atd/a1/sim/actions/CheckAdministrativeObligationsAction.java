@@ -46,6 +46,10 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
                this.sendMessage(releaseComp, "Warehouse", new Warehouse());
                this.complete(true);
            });
+           for (String student : getGSActions.keySet() )
+           {
+               sendMessage(getGSActions.get(student), student, new StudentPrivateState());
+           }
         });
         this.sendMessage(getComp, "Warehouse", new Warehouse());
 

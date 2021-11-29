@@ -49,7 +49,7 @@ public class ActorThreadLoop implements Runnable{
                 Queue<? extends Action<?>> actionQ = this.actorsActionQueues.get(actorID).tryAcquire();
                 if (actionQ != null) { // acquired action queue successfully
                     if (actionQ.size() != 0) {
-                        System.out.println("running a task - " + actionQ.peek().getActionName());
+
                         actionQ.remove().handle(this.aTPool, actorID, this.actors.get(actorID));
                         actionExecutionOccurred = true;
                         this.actorThreadPoolSubmissionCounter.decrementAndGet();

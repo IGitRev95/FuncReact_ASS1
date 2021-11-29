@@ -62,9 +62,9 @@ public class Simulator {
 			@Override
 			protected void start() {
 				then(actionArrayList,()->{
-					System.out.println(end().keySet());
+//					System.out.println(end().keySet());
 					System.out.println("start p2");
-//					runPhase2(parsedJson);
+					runPhase2(parsedJson);
 					this.complete(true);
 				});
 			}
@@ -99,6 +99,7 @@ public class Simulator {
 			@Override
 			protected void start() {
 				then(actionArrayList,()->{
+					System.out.println("beforeEnd");
 					System.out.println(end());
 					this.complete(true);
 				});
