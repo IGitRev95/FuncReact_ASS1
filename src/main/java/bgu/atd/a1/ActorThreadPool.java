@@ -18,7 +18,7 @@ public class ActorThreadPool {
 	
 	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<>();
-	private final Object threadWaitObject = new Object();
+	private final Object threadWaitObject;
 	private final ThreadPoolExecutor executor; // TODO: replace with custom
 	private final AtomicInteger submissionCounter;
 
@@ -44,6 +44,7 @@ public class ActorThreadPool {
 		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
 		// add the general thread behavior runnable to the executor {nthreas} times. @ActorThreadLoop
 		this.submissionCounter = new AtomicInteger(0);
+		threadWaitObject = new Object();
 		this.executor = new ThreadPoolExecutor(nthreads,nthreads,0, TimeUnit.SECONDS,workQueue);
 	}
 
@@ -82,7 +83,9 @@ public class ActorThreadPool {
 		}
 		this.actorsActionQueues.get(actorId).enQueueAction(action);
 		this.submissionCounter.getAndIncrement(); //TODO comment
-		this.threadWaitObject.notify();
+		synchronized (threadWaitObject){
+			this.threadWaitObject.notify();
+		}
 	}
 
 	/**
