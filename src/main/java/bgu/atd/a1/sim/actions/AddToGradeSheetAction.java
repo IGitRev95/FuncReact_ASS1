@@ -7,12 +7,14 @@ public class AddToGradeSheetAction extends Action<Boolean> {
 
     private final Integer studentGrade;
     private final String courseName;
+    private final String[] prereq;
 
-    public AddToGradeSheetAction(String courseName, Integer studentGrade)
+    public AddToGradeSheetAction(String courseName, Integer studentGrade, String[] prereq)
     {
+        this.setActionName("AddToGradeSheetAction");
         this.courseName = courseName;
         this.studentGrade = studentGrade;
-        this.setActionName("AddToGradeSheetAction");
+        this.prereq = prereq;
     }
 
     @Override
@@ -23,6 +25,14 @@ public class AddToGradeSheetAction extends Action<Boolean> {
             this.complete(false);
         }
         else {
+            for (String course : prereq)
+            {
+                if (!studentPS.getGrades().containsKey(course))
+                {
+                    this.complete(false);
+                    return;
+                }
+            }
             studentPS.getGrades().put(this.courseName, this.studentGrade);
             this.complete(true);
         }

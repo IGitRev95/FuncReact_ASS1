@@ -17,7 +17,6 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
     private final Integer studentGrade;
     //TODO:
     // Check prequisiotions
-    // Check open course ( spots!=-1 )
 
     public ParticipatingInCourseAction(String studentName) {
         this.setActionName("ParticipatingInCourseAction");
@@ -38,7 +37,7 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
             complete(false);
         }
         else {
-            AddToGradeSheetAction addToGSAction = new AddToGradeSheetAction(this.actorId, this.studentGrade);
+            AddToGradeSheetAction addToGSAction = new AddToGradeSheetAction(this.actorId, this.studentGrade, coursePS.getPrequisites().toArray(new String[0]));
             List<Action<Boolean>> actions = new ArrayList<>();
             actions.add(addToGSAction);
             then(actions, () -> {
