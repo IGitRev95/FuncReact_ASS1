@@ -49,7 +49,7 @@ public class ActionDependencies {
      * the method includes the updating stage of the overall isAllResolved value.
      * @return - return bool value of all the dependencies are resolved.
      */
-    public boolean isAllResolved(){ // changed cause of flow constrains
+    public synchronized boolean isAllResolved(){ // changed cause of flow constrains
         if(!this.allIsResolved){
             List<String> remainActionNames = new ArrayList<>(this.remainingActionsCollection.keySet());
             for (String actionName : remainActionNames){
