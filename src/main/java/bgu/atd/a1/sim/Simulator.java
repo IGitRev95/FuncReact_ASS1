@@ -128,7 +128,7 @@ public class Simulator {
 				action =  new CloseCourseAction();
 				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
 				break;
-			case "Open New Places":
+			case "Add Spaces":
 				action =  new OpenNewPlacesInACourseAction(rawAction.space);
 				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
 				break;
