@@ -60,8 +60,7 @@ public abstract class Action<R> {
        {
            for (ActionDependencies dependencies : actionsCallbackMap.keySet()) {
                if (dependencies.isAllResolved()) {
-                   actionsCallbackMap.get(dependencies).call();
-                   actionsCallbackMap.remove(dependencies);
+                   actionsCallbackMap.remove(dependencies).call();
                }
            }
        }
