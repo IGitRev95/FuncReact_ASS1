@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import bgu.atd.a1.Action;
 import bgu.atd.a1.ActorThreadPool;
@@ -185,10 +186,21 @@ public class Simulator {
 
 		start();
 
+
+
 	}
 
-	private static class ThreadAmountExtraction {
-		private int threads;
+	private static OutputSkeleton generateOutputSkeletonFromRecords(){
+		OutputSkeleton outputSkeleton = new OutputSkeleton();
+		List<DepartmentOutputSkeleton> departmentsPSList = new ArrayList<>();
+		List<CourseOutputSkeleton> coursesPSList = new ArrayList<>();
+		List<StudentOutputSkeleton> studentsPSList = new ArrayList<>();
+		for (String actor: actorTPRecords.keySet()){
+
+		}
+
+
+		return outputSkeleton;
 	}
 
 	private static void init(String inputPath){
@@ -197,6 +209,9 @@ public class Simulator {
 		simulationAlert = new Object();
 	}
 
+	private static class ThreadAmountExtraction {
+		private int threads;
+	}
 	private static class ParsedJson {
 		@SerializedName("Computers")
 		private ComputerRawJson[] computers;
@@ -240,4 +255,54 @@ public class Simulator {
 		private String type;
 	}
 
+	private static class OutputSkeleton{
+		@SerializedName("Departments")
+		private DepartmentOutputSkeleton[] departmentsPrivateStates;
+		@SerializedName("Courses")
+		private CourseOutputSkeleton[] coursesPrivateStates;
+		@SerializedName("Students")
+		private StudentOutputSkeleton[] studentsPrivateStates;
+	}
+	private static class DepartmentOutputSkeleton{
+		@SerializedName("Department")
+		private String departmentName;
+		@SerializedName("actions")
+		private String[] actionLog;
+		@SerializedName("courseList")
+		private String[] courseList;
+		@SerializedName("studentList")
+		private String[] studentList;
+	}
+	private static class CourseOutputSkeleton{
+		@SerializedName("Course")
+		private String courseName;
+		@SerializedName("actions")
+		private String[] actionLog;
+		@SerializedName("availableSpots")
+		private Integer availableSpots;
+		@SerializedName("registered")
+		private Integer registered;
+		@SerializedName("regStudents")
+		private String[] regStudents;
+		@SerializedName("prequisites")
+		private String[] prerequisites;
+	}
+	private static class StudentOutputSkeleton{
+		@SerializedName("Student")
+		private String studentName;
+		@SerializedName("actions")
+		private String[] actionLog;
+		@SerializedName("grades")
+		private String[] grades;
+		@SerializedName("signature")
+		private long signature;
+	}
+
+	private static List<String> gradeSheetToList(HashMap<String,Integer> gradeSheet){
+		List<String> gradeSheetAsList = new ArrayList<>();
+		for (String courseName: gradeSheet.keySet()){
+			gradeSheetAsList.add("("+courseName+","+gradeSheet.get(courseName)+")");
+		}
+		return gradeSheetAsList;
+	}
 }
