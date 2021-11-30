@@ -3,6 +3,7 @@ package bgu.atd.a1;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * an abstract class that represents an action that may be executed using the
@@ -79,11 +80,14 @@ public abstract class Action<R> {
 
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
        	ActionDependencies dependencies = new ActionDependencies(actions);
+        AtomicBoolean sent = new AtomicBoolean(false);
         for (Action<?> action : actions) {
             action.getResult().subscribe(() -> {
                 if (dependencies.isAllResolved())
                 {
+                    if(sent.compareAndSet(false,true)){
                     sendMessage(this, this.actorId, this.actorState);
+                    }
                 }
             });
         }
