@@ -28,26 +28,35 @@ public class Simulator {
 	public static ActorThreadPool actorThreadPool;
 	private static String inputJsonPath;
 	private static Gson gson;
+	private static Object simulationAlert;
+	private static HashMap<String,PrivateState> actorTPRecords = null;
 
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
-    public static void start() throws FileNotFoundException {
-		actorThreadPool.start();
-		ParsedJson parsedJson = gson.fromJson(new FileReader( inputJsonPath ), ParsedJson.class);
-		HashMap<Computer,Boolean> warehouseComputers = new HashMap<>();
-		for(ComputerRawJson comp: parsedJson.computers){
-			warehouseComputers.put(new Computer(comp.type, comp.sigFail, comp.sigSuccess ),false);
-		}
-		actorThreadPool.submit(new Action<Boolean>() {
-			@Override
-			protected void start() {
-				this.complete(true);
+    public static void start() {
+		try {
+			actorThreadPool.start();
+			ParsedJson parsedJson = gson.fromJson(new FileReader(inputJsonPath), ParsedJson.class);
+			HashMap<Computer, Boolean> warehouseComputers = new HashMap<>();
+			for (ComputerRawJson comp : parsedJson.computers) {
+				warehouseComputers.put(new Computer(comp.type, comp.sigFail, comp.sigSuccess), false);
 			}
-		}, "Warehouse", new Warehouse(warehouseComputers));
-		System.out.println("start p1");
-		runPhase1(parsedJson);
-
+			actorThreadPool.submit(new Action<Boolean>() {
+				@Override
+				protected void start() {
+					this.complete(true);
+				}
+			}, "Warehouse", new Warehouse(warehouseComputers));
+			System.out.println("start p1");
+			runPhase1(parsedJson);
+			synchronized (simulationAlert) {
+				simulationAlert.wait();
+			}
+		}catch (Exception e){
+			System.out.println("Exception in Start(), exception: "+e.toString());
+		}
+		actorTPRecords=end();
     }
 
 	private static void runPhase1(ParsedJson parsedJson)
@@ -98,8 +107,10 @@ public class Simulator {
 			protected void start() {
 				then(actionArrayList,()->{
 					System.out.println("beforeEnd");
-					System.out.println(end());
 					this.complete(true);
+					synchronized (simulationAlert){
+						simulationAlert.notify();
+					}
 				});
 			}
 		}, "Warehouse", new Warehouse()); // arbitrary target actor
@@ -174,7 +185,6 @@ public class Simulator {
 
 		start();
 
-//		return 0;
 	}
 
 	private static class ThreadAmountExtraction {
@@ -184,6 +194,7 @@ public class Simulator {
 	private static void init(String inputPath){
 		inputJsonPath = inputPath;
 		gson = new GsonBuilder().setPrettyPrinting().create();
+		simulationAlert = new Object();
 	}
 
 	private static class ParsedJson {
