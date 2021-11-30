@@ -15,19 +15,20 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
 
     private final List<String> obligations;
     private final List<String> students;
+    private final String type;
 
     //TODO add Student list
-    public CheckAdministrativeObligationsAction(List<String> obligations,List<String> students) {
+    public CheckAdministrativeObligationsAction(List<String> obligations,List<String> students, String type) {
         this.setActionName("CheckAdministrativeObligationsAction");
         this.obligations = obligations;
         this.students=students;
+        this.type = type;
     }
 
     @Override
     protected void start() {
-        DepartmentPrivateState departmentPS = (DepartmentPrivateState) this.actorState;
         HashMap<String, GetGradeSheetAction> getGSActions = new HashMap<>();
-        GetComputerAction getComp = new GetComputerAction();
+        GetComputerAction getComp = new GetComputerAction(this.type);
         List<GetComputerAction> actions = new ArrayList<>();
         actions.add(getComp);
         then(actions, ()-> { //waiting until a computer is available

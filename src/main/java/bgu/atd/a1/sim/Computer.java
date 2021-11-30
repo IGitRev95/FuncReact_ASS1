@@ -34,4 +34,8 @@ public class Computer {
 		}
 		return this.successSig;
 	}
+
+	public String getComputerType() {
+		return computerType;
+	}
 }

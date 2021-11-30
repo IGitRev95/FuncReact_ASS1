@@ -144,7 +144,7 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
 				break;
 			case "Administrative Check":
-				action =  new CheckAdministrativeObligationsAction(Arrays.asList(rawAction.conditions),Arrays.asList(rawAction.students));
+				action =  new CheckAdministrativeObligationsAction(Arrays.asList(rawAction.conditions),Arrays.asList(rawAction.students), rawAction.type);
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
 				break;
 			case "Register With Preferences":
@@ -188,7 +188,7 @@ public class Simulator {
 	}
 
 	private static class ThreadAmountExtraction {
-		private int threads = 0;
+		private int threads;
 	}
 
 	private static void init(String inputPath){
@@ -215,7 +215,7 @@ public class Simulator {
 		@SerializedName("Sig Fail")
 		private long sigFail;
 	}
-	private class RawAction {
+	private static class RawAction {
 		@SerializedName("Action")
 		private String actionName;
 		@SerializedName("Department")
@@ -236,6 +236,8 @@ public class Simulator {
 		private String[] students;
 		@SerializedName("Courses")
 		private String[] courses;
+		@SerializedName("Computer")
+		private String type;
 	}
 
 }
