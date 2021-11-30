@@ -26,6 +26,7 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
     }
 
     public ParticipatingInCourseAction(String studentName, Integer studentGrade) {
+        this.setActionName("ParticipatingInCourseAction");
         this.studentName = studentName;
         this.studentGrade = studentGrade;
     }
