@@ -38,10 +38,20 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
            }
            Collection<GetGradeSheetAction> gradeSheets = getGSActions.values();
            then(gradeSheets, () -> { //getting all gradeSheets from all students
+               for (GetGradeSheetAction act : gradeSheets)
+               {
+                   System.out.println(act.getResult().isResolved());
+               }
                for (String student : getGSActions.keySet()) {
-                   SetSignatureAction setSigAction = new SetSignatureAction(
-                           comp.checkAndSign(obligations, getGSActions.get(student).getResult().get()));
-                   this.sendMessage(setSigAction,student, new StudentPrivateState());
+
+                   try {
+                       SetSignatureAction setSigAction = new SetSignatureAction(
+                               comp.checkAndSign(obligations, getGSActions.get(student).getResult().get()));
+                       this.sendMessage(setSigAction, student, new StudentPrivateState());
+                   }
+                   catch (IllegalStateException e) {
+                       System.out.println("Student is: " + student);
+                   }
                }
                ReleaseComputerAction releaseComp = new ReleaseComputerAction(comp);
                this.sendMessage(releaseComp, "Warehouse", new Warehouse());
