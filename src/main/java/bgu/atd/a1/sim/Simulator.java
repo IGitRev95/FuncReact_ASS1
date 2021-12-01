@@ -185,6 +185,7 @@ public class Simulator {
 		}
 
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("result.ser" ))){
+			actorTPRecords.remove("Warehouse");
 			oos.writeObject(actorTPRecords);
 		}catch(Exception e){
 			System.out.println(e.getMessage());
