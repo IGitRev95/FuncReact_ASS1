@@ -1,5 +1,6 @@
 package bgu.atd.a1.sim.privateStates;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +11,7 @@ import bgu.atd.a1.PrivateState;
 /**
  * this class describe department's private state
  */
-public class DepartmentPrivateState extends PrivateState{
+public class DepartmentPrivateState extends PrivateState implements Serializable {
 	private List<String> courseList;
 	private List<String> studentList;
 	

@@ -1,9 +1,10 @@
 package bgu.atd.a1.sim;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class Computer {
+public class Computer implements Serializable {
 
 	String computerType;
 	long failSig;

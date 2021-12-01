@@ -2,6 +2,7 @@ package bgu.atd.a1.sim;
 
 import bgu.atd.a1.PrivateState;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -9,7 +10,7 @@ import java.util.HashMap;
  * and their suspended mutexes.
  * releasing and acquiring should be blocking free.
  */
-public class Warehouse extends PrivateState {
+public class Warehouse extends PrivateState implements Serializable {
 	private final HashMap<Computer,Boolean> computersUsage;
 
     public Warehouse() {

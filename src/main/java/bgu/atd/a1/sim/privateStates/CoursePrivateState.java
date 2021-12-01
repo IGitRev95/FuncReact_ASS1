@@ -1,5 +1,6 @@
 package bgu.atd.a1.sim.privateStates;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +11,7 @@ import bgu.atd.a1.PrivateState;
 /**
  * this class describe course's private state
  */
-public class CoursePrivateState extends PrivateState{
+public class CoursePrivateState extends PrivateState implements Serializable {
 
 	private Integer availableSpots;
 	private Integer registered;
