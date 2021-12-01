@@ -1,5 +1,6 @@
 package bgu.atd.a1.sim.privateStates;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,8 +25,8 @@ public class CoursePrivateState extends PrivateState{
 	public CoursePrivateState() {
 		this.availableSpots = -1;
 		this.registered = 0;
-		this.regStudents = new LinkedList<>(); //TODO ArrayList vs LinkedList
-		this.prequisites = new LinkedList<>();
+		this.regStudents = new ArrayList<>();
+		this.prequisites = new ArrayList<>();
 	}
 
 	public Integer getAvailableSpots() {
