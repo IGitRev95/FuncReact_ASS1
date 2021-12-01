@@ -15,7 +15,6 @@ public class SerDeserializer {
 
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(args[0]))){
             HashMap<String, PrivateState> map = (HashMap<String, PrivateState>) ois.readObject();
-//            Object map = ois.readObject();
             System.out.println(map.toString());
         }catch (Exception e){
             e.printStackTrace();
