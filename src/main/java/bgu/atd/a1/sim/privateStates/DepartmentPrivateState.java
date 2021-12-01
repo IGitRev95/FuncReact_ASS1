@@ -20,7 +20,7 @@ public class DepartmentPrivateState extends PrivateState{
 	 * this may cause automatic tests to fail..
 	 */
 	public DepartmentPrivateState() {
-		this.courseList = new ArrayList<>();//TODO ArrayList vs LinkedList
+		this.courseList = new ArrayList<>();
 		this.studentList = new ArrayList<>();
 	}
 
