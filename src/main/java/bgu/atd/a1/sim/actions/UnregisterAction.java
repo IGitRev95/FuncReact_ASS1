@@ -16,7 +16,7 @@ public class UnregisterAction extends Action<Boolean> {
     private final String studentName;
 
     public UnregisterAction(String studentName) {
-        this.setActionName("UnregisterAction");
+        this.setActionName("Unregister");
         this.studentName = studentName;
     }
 

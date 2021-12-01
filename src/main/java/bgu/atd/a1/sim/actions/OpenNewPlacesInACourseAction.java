@@ -11,7 +11,7 @@ public class OpenNewPlacesInACourseAction extends Action<Boolean> {
     private final Integer extensionAmount;
 
     public OpenNewPlacesInACourseAction(Integer extensionAmount) {
-        this.setActionName("OpenNewPlacesInACourseAction");
+        this.setActionName("Add Spaces");
         this.extensionAmount = extensionAmount;
     }
 

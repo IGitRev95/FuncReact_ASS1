@@ -19,13 +19,13 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
     // Check prequisiotions
 
     public ParticipatingInCourseAction(String studentName) {
-        this.setActionName("ParticipatingInCourseAction");
+        this.setActionName("Participate In Course");
         this.studentName = studentName;
         this.studentGrade = null;
     }
 
     public ParticipatingInCourseAction(String studentName, Integer studentGrade) {
-        this.setActionName("ParticipatingInCourseAction");
+        this.setActionName("Participate In Course");
         this.studentName = studentName;
         this.studentGrade = studentGrade;
     }

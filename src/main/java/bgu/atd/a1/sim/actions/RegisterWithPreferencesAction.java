@@ -17,12 +17,13 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
     private final List<Integer> suppliedGrades;
 
     public RegisterWithPreferencesAction(List<String> coursePreferenceList) {
-        this.setActionName("RegisterWithPreferencesAction");
+        this.setActionName("Register With Preferences");
         this.coursePreferenceList = coursePreferenceList;
         this.suppliedGrades = null;
     }
 
     public RegisterWithPreferencesAction(List<String> coursePreferenceList, List<Integer> suppliedGrades) {
+        this.setActionName("Register With Preferences");
         this.coursePreferenceList = coursePreferenceList;
         this.suppliedGrades = suppliedGrades;
         if(coursePreferenceList.size()!=suppliedGrades.size())

@@ -17,7 +17,7 @@ public class OpenNewCourseAction extends Action<Boolean> {
     private final List<String> prequisites;
 
     public OpenNewCourseAction(String courseName, Integer availableSpots, List<String> prequisites) {
-        this.setActionName("OpenNewCourseAction");
+        this.setActionName("Open Course");
         this.courseName = courseName;
         this.availableSpots = availableSpots;
         this.prequisites = prequisites;

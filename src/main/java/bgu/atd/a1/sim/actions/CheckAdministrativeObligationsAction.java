@@ -19,7 +19,7 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
 
     //TODO add Student list
     public CheckAdministrativeObligationsAction(List<String> obligations,List<String> students, String type) {
-        this.setActionName("CheckAdministrativeObligationsAction");
+        this.setActionName("Administrative Check");
         this.obligations = obligations;
         this.students=students;
         this.type = type;

@@ -10,7 +10,7 @@ import java.util.List;
 public class CloseCourseAction extends Action<Boolean> {
 
     public CloseCourseAction(){
-        this.setActionName("CloseCourseAction");
+        this.setActionName("Close Course");
     }
 
     @Override

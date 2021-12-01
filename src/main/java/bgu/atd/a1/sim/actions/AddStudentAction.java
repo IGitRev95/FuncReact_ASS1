@@ -15,7 +15,7 @@ public class AddStudentAction extends Action<Boolean> {
     private String studentName;
 
     public AddStudentAction(String studentName) {
-        this.setActionName("AddStudentAction");
+        this.setActionName("Add Student");
         this.studentName = studentName;
     }
 
