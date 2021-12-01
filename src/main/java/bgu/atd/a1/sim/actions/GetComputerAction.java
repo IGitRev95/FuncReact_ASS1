@@ -13,7 +13,7 @@ public class GetComputerAction extends Action<Computer> {
     private String type;
 
     public GetComputerAction(String type) {
-        this.setActionName("GetComputerAction");
+        this.setActionName("Get Computer");
         this.type = type;
     }
 

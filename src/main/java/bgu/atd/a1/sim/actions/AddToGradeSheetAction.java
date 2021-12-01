@@ -11,7 +11,7 @@ public class AddToGradeSheetAction extends Action<Boolean> {
 
     public AddToGradeSheetAction(String courseName, Integer studentGrade, String[] prereq)
     {
-        this.setActionName("AddToGradeSheetAction");
+        this.setActionName("Add To GradeSheet");
         this.courseName = courseName;
         this.studentGrade = studentGrade;
         this.prereq = prereq;

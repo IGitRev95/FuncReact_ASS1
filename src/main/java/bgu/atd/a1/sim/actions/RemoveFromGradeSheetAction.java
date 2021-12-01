@@ -13,7 +13,7 @@ public class RemoveFromGradeSheetAction extends Action<Boolean> {
     private final String courseName;
 
     public RemoveFromGradeSheetAction(String courseName) {
-        this.setActionName("RemoveFromGradeSheetAction");
+        this.setActionName("Remove Course From GradeSheet");
         this.courseName = courseName;
     }
 

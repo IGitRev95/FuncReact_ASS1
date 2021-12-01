@@ -8,7 +8,7 @@ public class SetSignatureAction extends Action<Boolean> {
     private final long signature;
 
     public SetSignatureAction(long signature) {
-        this.setActionName("SetSignatureAction");
+        this.setActionName("Set Signature");
         this.signature = signature;
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GetGradeSheetAction extends Action<HashMap<String, Integer>> {
     public GetGradeSheetAction() {
-        this.setActionName("GetGradeSheetAction");
+        this.setActionName("Get GradeSheet");
     }
 
     @Override

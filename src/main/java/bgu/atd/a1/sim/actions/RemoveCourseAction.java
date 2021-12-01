@@ -8,7 +8,7 @@ public class RemoveCourseAction extends Action<Boolean> {
     private final String courseName;
 
     public RemoveCourseAction(String courseName) {
-        this.setActionName("RemoveCourseAction");
+        this.setActionName("Remove Course");
         this.courseName = courseName;
     }
 

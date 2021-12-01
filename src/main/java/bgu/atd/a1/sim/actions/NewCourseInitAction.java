@@ -13,7 +13,7 @@ public class NewCourseInitAction extends Action<Boolean> {
     private final List<String> prequisites;
 
     public NewCourseInitAction(Integer availableSpots, List<String> prequisites) {
-        this.setActionName("NewCourseInitAction");
+        this.setActionName("New Course Init");
         this.availableSpots = availableSpots;
         this.prequisites = prequisites;
     }

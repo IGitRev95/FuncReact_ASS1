@@ -10,7 +10,7 @@ public class ReleaseComputerAction extends Action<Boolean> {
     private final Computer comp;
 
     public ReleaseComputerAction(Computer comp) {
-        this.setActionName("ReleaseComputerAction");
+        this.setActionName("Release Computer");
         this.comp = comp;
     }
 
