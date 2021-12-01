@@ -12,7 +12,6 @@ import java.util.HashMap;
 
 public class SerDeserializer {
     public static void main(String... args){
-        System.out.println(args.length);
         if (args.length != 1){
             throw new IllegalArgumentException("No file path supplied");
         }
