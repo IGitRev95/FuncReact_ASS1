@@ -38,10 +38,6 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
            }
            Collection<GetGradeSheetAction> gradeSheets = getGSActions.values();
            then(gradeSheets, () -> { //getting all gradeSheets from all students
-               for (GetGradeSheetAction act : gradeSheets)
-               {
-                   System.out.println(act.getResult().isResolved());
-               }
                for (String student : getGSActions.keySet()) {
 
                    try {

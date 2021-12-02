@@ -1,9 +1,6 @@
 package bgu.atd.a1;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 //TODO: Build Tests
 
@@ -17,7 +14,7 @@ public class ActionDependencies {
      */
 
     private final Collection<? extends Action<?>> dependenciesCollection; // used to store and quick access to the dependencies actions results
-    private final HashMap<String, Action<?>> remainingActionsCollection; // used to control in remaining dependencies
+    private final LinkedList< Action<?>> remainingActionsCollection; // used to control in remaining dependencies
     private boolean allIsResolved;
 
     /**
@@ -25,7 +22,7 @@ public class ActionDependencies {
      */
     public ActionDependencies() {
         this.dependenciesCollection = new ArrayList<>();
-        this.remainingActionsCollection = new HashMap<>();
+        this.remainingActionsCollection = new LinkedList<>();
         resolvedAllCheck();
     }
 
@@ -34,10 +31,8 @@ public class ActionDependencies {
      */
     public ActionDependencies(Collection<? extends Action<?>> dependenciesCollection) {
         this.dependenciesCollection = dependenciesCollection;
-        this.remainingActionsCollection = new HashMap<>();
-        for (Action<?> action : dependenciesCollection){
-            this.remainingActionsCollection.put(action.getActionName(),action);
-        }
+        this.remainingActionsCollection = new LinkedList<>();
+        this.remainingActionsCollection.addAll(dependenciesCollection);
         resolvedAllCheck();
     }
 
@@ -51,10 +46,10 @@ public class ActionDependencies {
      */
     public synchronized boolean isAllResolved(){ // changed cause of flow constrains
         if(!this.allIsResolved){
-            List<String> remainActionNames = new ArrayList<>(this.remainingActionsCollection.keySet());
-            for (String actionName : remainActionNames){
-                if(this.remainingActionsCollection.get(actionName).getResult().isResolved()){
-                    this.remainingActionsCollection.remove(actionName);
+            List<Action<?>> remainActionNames = new ArrayList<>(this.remainingActionsCollection);
+            for (Action<?> action : remainActionNames){
+                if(action.getResult().isResolved()){
+                    this.remainingActionsCollection.remove(action);
                 }
             }
             resolvedAllCheck();
