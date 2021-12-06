@@ -19,14 +19,8 @@ public class ActorThreadPool {
 	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<>();
 	private final Object threadWaitObject;
-	private final ThreadPoolExecutor executor; // TODO: replace with custom
+	private final ThreadPoolExecutor executor;
 	private final AtomicInteger submissionCounter;
-
-	//TODO:
-	// 1.implement custom executor
-	// 2.update actorThreadPool constructor
-	// 3.update actorThreadPool start
-
 
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
@@ -44,7 +38,7 @@ public class ActorThreadPool {
 		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
 		// add the general thread behavior runnable to the executor {nthreas} times. @ActorThreadLoop
 		this.submissionCounter = new AtomicInteger(0);
-		threadWaitObject = new Object();
+		this.threadWaitObject = new Object();
 		this.executor = new ThreadPoolExecutor(nthreads,nthreads,0, TimeUnit.SECONDS,workQueue);
 	}
 
@@ -79,12 +73,12 @@ public class ActorThreadPool {
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
 		if(!this.actors.containsKey(actorId)){
-			boolean newActorAdditionSuccession = this.addNewActor(actorId,actorState);
+			this.addNewActor(actorId,actorState);
 		}
 		this.actorsActionQueues.get(actorId).enQueueAction(action);
-		this.submissionCounter.getAndIncrement(); //TODO comment
+		this.submissionCounter.getAndIncrement(); // Overall waiting tasks count - meant to prevent a notifying missing
 		synchronized (threadWaitObject){
-			this.threadWaitObject.notify();
+			this.threadWaitObject.notify(); // wake a waiting threads when a new action is submitted
 		}
 	}
 
@@ -100,7 +94,7 @@ public class ActorThreadPool {
 	 */
 	public void shutdown() throws InterruptedException {
 		this.executor.shutdownNow();
-		this.executor.awaitTermination(10,TimeUnit.SECONDS);
+		this.executor.awaitTermination(10,TimeUnit.SECONDS); // current thread wait for all working threads termination
 	}
 
 	/**
