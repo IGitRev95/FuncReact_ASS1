@@ -40,10 +40,17 @@ public class ParticipatingInCourseAction extends Action<Boolean> {
             actions.add(addToGSAction);
             then(actions, () -> {
                 if(actions.get(0).getResult().get()){
-                    coursePS.setAvailableSpots(coursePS.getAvailableSpots() -1);
-                    coursePS.setRegistered(coursePS.getRegistered()+1);
-                    coursePS.getRegStudents().add(this.studentName);
-                    this.complete(true);
+                    // another check of available spots after student self course registration procedure
+                    if(coursePS.getAvailableSpots() > 0){
+                        coursePS.setAvailableSpots(coursePS.getAvailableSpots() -1);
+                        coursePS.setRegistered(coursePS.getRegistered()+1);
+                        coursePS.getRegStudents().add(this.studentName);
+                        this.complete(true);
+                    }else{
+                        RemoveFromGradeSheetAction undoSelfRegister = new RemoveFromGradeSheetAction(this.actorId);
+                        this.sendMessage(undoSelfRegister, this.studentName, new StudentPrivateState());
+                        this.complete(false);
+                    }
                 }
                 else {this.complete(false);}
             });
