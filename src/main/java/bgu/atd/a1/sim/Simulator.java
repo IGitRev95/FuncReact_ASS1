@@ -13,6 +13,7 @@ import bgu.atd.a1.PrivateState;
 import bgu.atd.a1.sim.actions.*;
 import bgu.atd.a1.sim.privateStates.CoursePrivateState;
 import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
+import bgu.atd.a1.sim.privateStates.StudentPrivateState;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 
@@ -51,7 +52,7 @@ public class Simulator {
 				simulationAlert.wait();
 			}
 		}catch (Exception e){
-			System.out.println("Exception in Start(), exception: "+e.toString());
+			System.out.println("Exception in Start(), exception: "+e.getMessage());
 		}
 		actorTPRecords=end();
     }
@@ -145,8 +146,8 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
 				break;
 			case "Register With Preferences":
-				action =  new RegisterWithPreferencesAction(Arrays.asList(rawAction.conditions),Arrays.asList(rawAction.grade));
-				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState()); //TODO check actor
+				action =  new RegisterWithPreferencesAction(new ArrayList<>(Arrays.asList(rawAction.courses)),new ArrayList<>(Arrays.asList(rawAction.grade)));
+				actorThreadPool.submit(action,rawAction.student,new StudentPrivateState());
 				break;
 		}
 		return action;
@@ -192,19 +193,6 @@ public class Simulator {
 		}
 
 	}
-//
-//	private static OutputSkeleton generateOutputSkeletonFromRecords(){
-//		OutputSkeleton outputSkeleton = new OutputSkeleton();
-//		List<DepartmentOutputSkeleton> departmentsPSList = new ArrayList<>();
-//		List<CourseOutputSkeleton> coursesPSList = new ArrayList<>();
-//		List<StudentOutputSkeleton> studentsPSList = new ArrayList<>();
-//		for (String actor: actorTPRecords.keySet()){
-//
-//		}
-//
-//
-//		return outputSkeleton;
-//	}
 
 	private static void init(String inputPath){
 		inputJsonPath = inputPath;
@@ -257,220 +245,4 @@ public class Simulator {
 		@SerializedName("Computer")
 		private String type;
 	}
-
-//	private static class OutputSkeleton implements Serializable {
-//		@SerializedName("Departments")
-//		private DepartmentOutputSkeleton[] Departments;
-//		@SerializedName("Courses")
-//		private CourseOutputSkeleton[] Courses;
-//		@SerializedName("Students")
-//		private StudentOutputSkeleton[] Students;
-//
-//		public DepartmentOutputSkeleton[] getDepartments() {
-//			return Departments;
-//		}
-//
-//		public void setDepartments(DepartmentOutputSkeleton[] departments) {
-//			Departments = departments;
-//		}
-//
-//		public CourseOutputSkeleton[] getCourses() {
-//			return Courses;
-//		}
-//
-//		public void setCourses(CourseOutputSkeleton[] courses) {
-//			Courses = courses;
-//		}
-//
-//		public StudentOutputSkeleton[] getStudents() {
-//			return Students;
-//		}
-//
-//		public void setStudents(StudentOutputSkeleton[] students) {
-//			Students = students;
-//		}
-//
-//		public OutputSkeleton(DepartmentOutputSkeleton[] departments, CourseOutputSkeleton[] courses, StudentOutputSkeleton[] students) {
-//			Departments = departments;
-//			Courses = courses;
-//			Students = students;
-//		}
-//	}
-//	private static class DepartmentOutputSkeleton implements Serializable {
-//		@SerializedName("Department")
-//		private String Department;
-//		@SerializedName("actions")
-//		private String[] actions;
-//		@SerializedName("courseList")
-//		private String[] courseList;
-//		@SerializedName("studentList")
-//		private String[] studentList;
-//
-//		public String getDepartment() {
-//			return Department;
-//		}
-//
-//		public void setDepartment(String department) {
-//			Department = department;
-//		}
-//
-//		public String[] getActions() {
-//			return actions;
-//		}
-//
-//		public void setActions(String[] actions) {
-//			this.actions = actions;
-//		}
-//
-//		public String[] getCourseList() {
-//			return courseList;
-//		}
-//
-//		public void setCourseList(String[] courseList) {
-//			this.courseList = courseList;
-//		}
-//
-//		public String[] getStudentList() {
-//			return studentList;
-//		}
-//
-//		public void setStudentList(String[] studentList) {
-//			this.studentList = studentList;
-//		}
-//
-//		public DepartmentOutputSkeleton(String department, String[] actions, String[] courseList, String[] studentList) {
-//			Department = department;
-//			this.actions = actions;
-//			this.courseList = courseList;
-//			this.studentList = studentList;
-//		}
-//	}
-//	private static class CourseOutputSkeleton implements Serializable{
-//		@SerializedName("Course")
-//		private String Course;
-//		@SerializedName("actions")
-//		private String[] actions;
-//		@SerializedName("availableSpots")
-//		private Integer availableSpots;
-//		@SerializedName("registered")
-//		private Integer registered;
-//		@SerializedName("regStudents")
-//		private String[] regStudents;
-//		@SerializedName("prequisites")
-//		private String[] prequisites;
-//
-//		public CourseOutputSkeleton(String course, String[] actions, Integer availableSpots, Integer registered, String[] regStudents, String[] prequisites) {
-//			Course = course;
-//			this.actions = actions;
-//			this.availableSpots = availableSpots;
-//			this.registered = registered;
-//			this.regStudents = regStudents;
-//			this.prequisites = prequisites;
-//		}
-//
-//		public String getCourse() {
-//			return Course;
-//		}
-//
-//		public void setCourse(String course) {
-//			Course = course;
-//		}
-//
-//		public String[] getActions() {
-//			return actions;
-//		}
-//
-//		public void setActions(String[] actions) {
-//			this.actions = actions;
-//		}
-//
-//		public Integer getAvailableSpots() {
-//			return availableSpots;
-//		}
-//
-//		public void setAvailableSpots(Integer availableSpots) {
-//			this.availableSpots = availableSpots;
-//		}
-//
-//		public Integer getRegistered() {
-//			return registered;
-//		}
-//
-//		public void setRegistered(Integer registered) {
-//			this.registered = registered;
-//		}
-//
-//		public String[] getRegStudents() {
-//			return regStudents;
-//		}
-//
-//		public void setRegStudents(String[] regStudents) {
-//			this.regStudents = regStudents;
-//		}
-//
-//		public String[] getPrequisites() {
-//			return prequisites;
-//		}
-//
-//		public void setPrequisites(String[] prequisites) {
-//			this.prequisites = prequisites;
-//		}
-//	}
-//	private static class StudentOutputSkeleton implements Serializable{
-//		@SerializedName("Student")
-//		private String Student;
-//		@SerializedName("actions")
-//		private String[] actions;
-//		@SerializedName("grades")
-//		private String[] grades;
-//		@SerializedName("signature")
-//		private long signature;
-//
-//		public StudentOutputSkeleton(String student, String[] actions, String[] grades, long signature) {
-//			Student = student;
-//			this.actions = actions;
-//			this.grades = grades;
-//			this.signature = signature;
-//		}
-//
-//		public String getStudent() {
-//			return Student;
-//		}
-//
-//		public void setStudent(String student) {
-//			Student = student;
-//		}
-//
-//		public String[] getActions() {
-//			return actions;
-//		}
-//
-//		public void setActions(String[] actions) {
-//			this.actions = actions;
-//		}
-//
-//		public String[] getGrades() {
-//			return grades;
-//		}
-//
-//		public void setGrades(String[] grades) {
-//			this.grades = grades;
-//		}
-//
-//		public long getSignature() {
-//			return signature;
-//		}
-//
-//		public void setSignature(long signature) {
-//			this.signature = signature;
-//		}
-//	}
-//
-//	private static List<String> gradeSheetToList(HashMap<String,Integer> gradeSheet){
-//		List<String> gradeSheetAsList = new ArrayList<>();
-//		for (String courseName: gradeSheet.keySet()){
-//			gradeSheetAsList.add("("+courseName+","+gradeSheet.get(courseName)+")");
-//		}
-//		return gradeSheetAsList;
-//	}
 }
