@@ -15,8 +15,6 @@ import java.util.List;
 public class ParticipatingInCourseAction extends Action<Boolean> {
     private final String studentName;
     private final Integer studentGrade;
-    //TODO:
-    // Check prequisiotions
 
     public ParticipatingInCourseAction(String studentName) {
         this.setActionName("Participate In Course");
