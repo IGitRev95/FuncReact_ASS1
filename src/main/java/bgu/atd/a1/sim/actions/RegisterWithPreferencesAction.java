@@ -16,18 +16,10 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
     private final List<String> coursePreferenceList;
     private final List<Integer> suppliedGrades;
 
-    public RegisterWithPreferencesAction(List<String> coursePreferenceList) {
-        this.setActionName("Register With Preferences");
-        this.coursePreferenceList = coursePreferenceList;
-        this.suppliedGrades = null;
-    }
-
     public RegisterWithPreferencesAction(List<String> coursePreferenceList, List<Integer> suppliedGrades) {
         this.setActionName("Register With Preferences");
         this.coursePreferenceList = coursePreferenceList;
         this.suppliedGrades = suppliedGrades;
-        if(coursePreferenceList.size()!=suppliedGrades.size())
-            throw new IllegalArgumentException("course list and grade list have non equal lengths");
     }
 
     @Override
@@ -35,6 +27,8 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
         if (this.suppliedGrades == null) {
             registerWithoutGrades();
         } else {
+            if(coursePreferenceList.size()!=suppliedGrades.size())
+                throw new IllegalArgumentException("course list and grade list have non equal lengths");
             registerWithGrades();
         }
     }
@@ -43,6 +37,7 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
         if(this.coursePreferenceList.isEmpty()){
             this.complete(false);
         }else {
+            //try register to first course in the preference list
             String preferredCourse = this.coursePreferenceList.remove(0);
             ParticipatingInCourseAction courseRegistrationAttempt = new ParticipatingInCourseAction(this.actorId);
             List<Action<Boolean>> registrationAttemptDependency = this.singleRegistrationDependency(courseRegistrationAttempt);
@@ -50,7 +45,7 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
                 boolean registrationSuccess = registrationAttemptDependency.get(0).getResult().get();
                 if(registrationSuccess){
                     this.complete(true);
-                }else{
+                }else{ // try register to the next in line
                     registerWithoutGrades();
                 }
             });
@@ -62,6 +57,7 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
         if(this.coursePreferenceList.isEmpty()){
             this.complete(false);
         }else {
+            //try register to first course in the preference list
             String preferredCourse = this.coursePreferenceList.remove(0);
             Integer preferredCourseGrade = this.suppliedGrades.remove(0);
             ParticipatingInCourseAction courseRegistrationAttempt = new ParticipatingInCourseAction(this.actorId,preferredCourseGrade);
@@ -70,7 +66,7 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
                 boolean registrationSuccess = registrationAttemptDependency.get(0).getResult().get();
                 if(registrationSuccess){
                     this.complete(true);
-                }else{
+                }else{ // try register to the next in line
                     registerWithGrades();
                 }
             });
