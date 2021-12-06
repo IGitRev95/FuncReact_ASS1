@@ -105,7 +105,6 @@ public class Simulator {
 			@Override
 			protected void start() {
 				then(actionArrayList,()->{
-					System.out.println("beforeEnd");
 					this.complete(true);
 					// waking main thread that simulation completed
 					synchronized (simulationAlert){
