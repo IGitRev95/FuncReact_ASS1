@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ActorActionsQueue {
 
-    private final ConcurrentLinkedQueue<Action<?>> actionsQueue = new ConcurrentLinkedQueue<Action<?>>();
+    private final ConcurrentLinkedQueue<Action<?>> actionsQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean isExecutedNow = new AtomicBoolean(false);
 
 
@@ -19,7 +19,7 @@ public class ActorActionsQueue {
      * @return the actor's action queue if successful and null otherwise.
      */
     public Queue<? extends Action<?>> tryAcquire() {
-        if(this.isExecutedNow.compareAndSet(false,true)){ // queue is free - replace with the try lock if locked allow queue access
+        if(this.isExecutedNow.compareAndSet(false,true)){ // cas operation fast and non-blocking check
             return getActionsQueue();
         }
         else {
@@ -40,7 +40,7 @@ public class ActorActionsQueue {
      * releases the actor action queue from execution state and enables other threads to access it.
      * @throws Exception - in case of multiple acquisition of the action queue an exception is thrown.
      */
-    public void releaseActorQueue() throws Exception{ // so after finishing current execution (to complete or not) release the actor queue for further execution.
+    public void releaseActorQueue() throws Exception{ // after finishing current execution (to complete or not) release the actor queue for further execution.
         if(!this.isExecutedNow.compareAndSet(true, false)){
             throw new Exception("parallel actor queue acquisition");
         }
