@@ -14,7 +14,6 @@ public class Computer implements Serializable {
 		this.computerType = computerType;
 		this.failSig = failSig;
 		this.successSig = successSig;
-
 	}
 	
 	/**
@@ -28,7 +27,7 @@ public class Computer implements Serializable {
 	public long checkAndSign(List<String> courses, Map<String, Integer> coursesGrades){
 		for (String course : courses)
 		{
-			if (!coursesGrades.containsKey(course) || coursesGrades.get(course) < 56 )
+			if (!coursesGrades.containsKey(course) ||  coursesGrades.get(course) == null || coursesGrades.get(course) < 56 )
 			{
 				return this.failSig;
 			}

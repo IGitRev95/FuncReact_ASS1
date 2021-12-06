@@ -126,7 +126,11 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
 				break;
 			case "Participate In Course":
-				action =  new ParticipatingInCourseAction(rawAction.student, rawAction.grade[0]);
+				Integer grade=null;
+				if(rawAction.grade!=null){
+					grade=rawAction.grade[0];
+				}
+				action =  new ParticipatingInCourseAction(rawAction.student, grade);
 				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
 				break;
 			case "Unregister":
