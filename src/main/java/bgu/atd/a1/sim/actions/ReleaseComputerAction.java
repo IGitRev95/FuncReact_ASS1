@@ -6,6 +6,9 @@ import bgu.atd.a1.sim.Warehouse;
 
 import java.util.HashMap;
 
+/**
+ * release an acquired computer after use is finished
+ */
 public class ReleaseComputerAction extends Action<Boolean> {
     private final Computer comp;
 
@@ -16,7 +19,6 @@ public class ReleaseComputerAction extends Action<Boolean> {
 
     @Override
     protected void start() {
-        //TODO: TEST
         HashMap<Computer,Boolean> warehouseComputerMap = ((Warehouse)this.actorState).getComputersUsage();
         if(!warehouseComputerMap.get(this.comp)){
             this.complete(false);
