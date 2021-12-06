@@ -17,7 +17,7 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
     private final List<String> students;
     private final String type;
 
-    //TODO add Student list
+    //TODO fix signature
     public CheckAdministrativeObligationsAction(List<String> obligations,List<String> students, String type) {
         this.setActionName("Administrative Check");
         this.obligations = obligations;
