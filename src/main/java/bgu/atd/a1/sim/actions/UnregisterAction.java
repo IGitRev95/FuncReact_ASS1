@@ -35,7 +35,7 @@ public class UnregisterAction extends Action<Boolean> {
                 Boolean removedFromGradeSheet = courseRemovalDependencies.get(0).getResult().get();
                 if(removedFromGradeSheet){
                     courseStudentList.remove(this.studentName);
-                    if(coursePS.getAvailableSpots()!=-1){
+                    if(coursePS.getAvailableSpots()!=-1){ // if course is closed do not update available spots
                         coursePS.setAvailableSpots(coursePS.getAvailableSpots()+1);
                     }
                     coursePS.setRegistered(coursePS.getRegistered()-1);
