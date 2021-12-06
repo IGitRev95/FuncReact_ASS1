@@ -37,6 +37,7 @@ public class Simulator {
 			actorThreadPool.start();
 			ParsedJson parsedJson = gson.fromJson(new FileReader(inputJsonPath), ParsedJson.class);
 			HashMap<Computer, Boolean> warehouseComputers = new HashMap<>();
+			// Warehouse computer init
 			for (ComputerRawJson comp : parsedJson.computers) {
 				warehouseComputers.put(new Computer(comp.type, comp.sigFail, comp.sigSuccess), false);
 			}
@@ -46,14 +47,15 @@ public class Simulator {
 					this.complete(true);
 				}
 			}, "Warehouse", new Warehouse(warehouseComputers));
-			System.out.println("start p1");
 			runPhase1(parsedJson);
+			// Main thread waits for simulation completion
 			synchronized (simulationAlert) {
 				simulationAlert.wait();
 			}
 		}catch (Exception e){
 			System.out.println("Exception in Start(), exception: "+e.getMessage());
 		}
+		//extracting records
 		actorTPRecords=end();
     }
 
@@ -63,12 +65,11 @@ public class Simulator {
 		for(RawAction rawAction: parsedJson.phase1){
 			actionArrayList.add(buildNSendAction(rawAction));
 		}
-
+		// submitting phase 1 actions and set a callback of running phase 2
 		actorThreadPool.submit(new Action<Boolean>() {
 			@Override
 			protected void start() {
 				then(actionArrayList,()->{
-					System.out.println("start p2");
 					runPhase2(parsedJson);
 					this.complete(true);
 				});
@@ -82,12 +83,11 @@ public class Simulator {
 		for(RawAction rawAction: parsedJson.phase2){
 			actionArrayList.add(buildNSendAction(rawAction));
 		}
-		System.out.println("Finished sending P2 actions");
+		// submitting phase 2 actions and set a callback of running phase 3
 		actorThreadPool.submit(new Action<Boolean>() {
 			@Override
 			protected void start() {
 				then(actionArrayList,()->{
-					System.out.println("start p3");
 					runPhase3(parsedJson);
 					this.complete(true);
 				});
@@ -100,12 +100,14 @@ public class Simulator {
 		for(RawAction rawAction: parsedJson.phase3){
 			actionArrayList.add(buildNSendAction(rawAction));
 		}
+		// submitting phase 3 actions and set a callback of final steps of simulation
 		actorThreadPool.submit(new Action<Boolean>() {
 			@Override
 			protected void start() {
 				then(actionArrayList,()->{
 					System.out.println("beforeEnd");
 					this.complete(true);
+					// waking main thread that simulation completed
 					synchronized (simulationAlert){
 						simulationAlert.notify();
 					}
@@ -126,6 +128,7 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
 				break;
 			case "Participate In Course":
+				// grade not necessarily supplied
 				Integer grade=null;
 				if(rawAction.grade!=null){
 					grade=rawAction.grade[0];
@@ -188,7 +191,7 @@ public class Simulator {
 		}catch (Exception fileNotFoundException){
 			System.out.println(fileNotFoundException.getMessage());
 		}
-
+		// output thread pool records to ser file
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("result.ser" ))){
 			actorTPRecords.remove("Warehouse");
 			oos.writeObject(actorTPRecords);
@@ -204,6 +207,8 @@ public class Simulator {
 		simulationAlert = new Object();
 	}
 
+
+	// Skeleton classes for json gson based parsing
 	private static class ThreadAmountExtraction {
 		private int threads;
 	}
