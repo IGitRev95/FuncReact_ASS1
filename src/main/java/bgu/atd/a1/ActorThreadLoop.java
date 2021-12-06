@@ -1,27 +1,26 @@
 package bgu.atd.a1;
 
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The general thread loop behavior:
- * look for a free actor queue
- * try execution
- * execute one action
- * look for suspended actions for the current actor
- * repeat
+ *  look for a free actor queue
+ *  try execution
+ *  execute one action
+ *  look for suspended actions for the current actor
+ *  repeat
  *
  * if no actor are available or action queues are empty sleep
  */
 public class ActorThreadLoop implements Runnable{
     private final ConcurrentHashMap<String,PrivateState> actors;
     private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues;
-    private final Object waitObject;
+    private final Object waitObject; // for the submitting new tasks awaking mechanism
     private final ActorThreadPool aTPool;
     private boolean isInterrupted = false;
-    private final AtomicInteger actorThreadPoolSubmissionCounter;
+    private final AtomicInteger actorThreadPoolSubmissionCounter; // indicate of waiting tasks in actorTP
 
     public ActorThreadLoop(ConcurrentHashMap<String, PrivateState> actors,
                            ConcurrentHashMap<String, ActorActionsQueue> actorsActionQueues,
@@ -48,8 +47,7 @@ public class ActorThreadLoop implements Runnable{
 
                 Queue<? extends Action<?>> actionQ = this.actorsActionQueues.get(actorID).tryAcquire();
                 if (actionQ != null) { // acquired action queue successfully
-                    if (actionQ.size() != 0) {
-
+                    if (actionQ.size() != 0) { // there is an action to execute
                         actionQ.remove().handle(this.aTPool, actorID, this.actors.get(actorID));
                         actionExecutionOccurred = true;
                         this.actorThreadPoolSubmissionCounter.decrementAndGet();
@@ -67,7 +65,7 @@ public class ActorThreadLoop implements Runnable{
             if (!actionExecutionOccurred && !isInterrupted && this.actorThreadPoolSubmissionCounter.get() == 0) {
                 try {
                     synchronized (this.waitObject){
-                        this.waitObject.wait();
+                        this.waitObject.wait(); // waiting on the actorTP common waiting (for work) object
                     }
                 } catch (InterruptedException e) {
                     this.isInterrupted = true;
