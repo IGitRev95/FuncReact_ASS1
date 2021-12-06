@@ -21,7 +21,7 @@ public class RemoveFromGradeSheetAction extends Action<Boolean> {
     protected void start() {
         StudentPrivateState studentPS = ((StudentPrivateState) this.actorState);
         Map<String, Integer> studentGradeSheet = studentPS.getGrades();
-        studentGradeSheet.remove(this.courseName);//TODO: Should we inform in case student is not rolled in the given course?
+        studentGradeSheet.remove(this.courseName);
         this.complete(true);
     }
 }
