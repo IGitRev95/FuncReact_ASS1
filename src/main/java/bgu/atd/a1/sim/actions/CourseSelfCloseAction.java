@@ -6,6 +6,9 @@ import bgu.atd.a1.sim.privateStates.CoursePrivateState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Course self-closing procedure
+ */
 public class CourseSelfCloseAction extends Action<Boolean> {
     public CourseSelfCloseAction() {
         this.setActionName("Course Self Close");
@@ -14,6 +17,7 @@ public class CourseSelfCloseAction extends Action<Boolean> {
     @Override
     protected void start() {
         CoursePrivateState coursePS = (CoursePrivateState) this.actorState;
+        //first setting available spots to -1 to prevent more students registrations
         coursePS.setAvailableSpots(-1);
         List<Action<Boolean>> actions = new ArrayList<>();
         // unregister procedure for each registered student
