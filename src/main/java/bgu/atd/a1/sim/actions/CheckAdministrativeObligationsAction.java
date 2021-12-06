@@ -3,7 +3,6 @@ package bgu.atd.a1.sim.actions;
 import bgu.atd.a1.Action;
 import bgu.atd.a1.sim.Computer;
 import bgu.atd.a1.sim.Warehouse;
-import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
 import bgu.atd.a1.sim.privateStates.StudentPrivateState;
 
 import java.util.ArrayList;
@@ -11,6 +10,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The department's secretary allocates one of the computers available in the warehouse, and
+ * check for each student if she meets some administrative obligations. The computer generates a signature
+ * and save it in the private state of the students.
+ * Should be initially submitted to the department's actor
+ */
 public class CheckAdministrativeObligationsAction extends Action<Boolean> {
 
     private final List<String> obligations;
@@ -39,26 +44,19 @@ public class CheckAdministrativeObligationsAction extends Action<Boolean> {
            Collection<GetGradeSheetAction> gradeSheets = getGSActions.values();
            then(gradeSheets, () -> { //getting all gradeSheets from all students
                for (String student : getGSActions.keySet()) {
-
-                   try {
-                       SetSignatureAction setSigAction = new SetSignatureAction(
-                               comp.checkAndSign(obligations, getGSActions.get(student).getResult().get()));
-                       this.sendMessage(setSigAction, student, new StudentPrivateState());
-                   }
-                   catch (IllegalStateException e) {
-                       System.out.println("Student is: " + student);
-                   }
+                   SetSignatureAction setSigAction = new SetSignatureAction(
+                           comp.checkAndSign(obligations, getGSActions.get(student).getResult().get()));
+                   this.sendMessage(setSigAction, student, new StudentPrivateState());
                }
                ReleaseComputerAction releaseComp = new ReleaseComputerAction(comp);
                this.sendMessage(releaseComp, "Warehouse", new Warehouse());
                this.complete(true);
            });
-           for (String student : getGSActions.keySet() )
+           for (String student : getGSActions.keySet() ) // send procedure for acquire grade sheets
            {
                sendMessage(getGSActions.get(student), student, new StudentPrivateState());
            }
         });
         this.sendMessage(getComp, "Warehouse", new Warehouse());
-
     }
 }
