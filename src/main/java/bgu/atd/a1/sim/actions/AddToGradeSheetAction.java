@@ -25,6 +25,7 @@ public class AddToGradeSheetAction extends Action<Boolean> {
             this.complete(false);
         }
         else {
+            // course prerequisites check
             for (String course : prereq)
             {
                 if (!studentPS.getGrades().containsKey(course))
