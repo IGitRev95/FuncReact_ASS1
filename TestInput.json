@@ -55,7 +55,7 @@
     {
       "Action": "Participate In Course",
       "Student": "123456789",
-      "Course": "Intro To CS",
+      "Course": "Data Structures",
       "Grade": ["77"]
     },
 
@@ -68,10 +68,10 @@
   ],
   "Phase 3": [
     {
-      "Action": "Participate In Course",
+      "Action": "Register With Preferences",
       "Student": "123456789",
-      "Course": "SPL",
-      "Grade": ["98"]
+      "Courses": ["SPL","Data Structures","Intro To CS"],
+      "Grade": ["98","0","0"]
     },
     {
       "Action": "Participate In Course",
