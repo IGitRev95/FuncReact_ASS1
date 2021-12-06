@@ -1,9 +1,7 @@
 package bgu.atd.a1.sim.actions;
 
 import bgu.atd.a1.Action;
-import bgu.atd.a1.sim.privateStates.CoursePrivateState;
 import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
-import bgu.atd.a1.sim.privateStates.StudentPrivateState;
 
 import java.util.List;
 
@@ -12,7 +10,7 @@ import java.util.List;
  * Should be initially submitted to the Department's actor.
  */
 public class AddStudentAction extends Action<Boolean> {
-    private String studentName;
+    private final String studentName;
 
     public AddStudentAction(String studentName) {
         this.setActionName("Add Student");
