@@ -64,6 +64,16 @@
       "Student": "5959595959",
       "Course": "Intro To CS",
       "Grade": ["94"]
+    },
+    {
+      "Action": "Participate In Course",
+      "Student": "5959595959",
+      "Course": "SPL",
+      "Grade": ["94"]
+    },
+    {
+      "Action": "Close Course",
+      "Course": "SPL"
     }
   ],
   "Phase 3": [
