@@ -21,17 +21,21 @@ public class CourseSelfCloseAction extends Action<Boolean> {
         {
             actions.add(new UnregisterAction(student));
         }
-        then(actions,()->{
-            //if each of unregistering succeeded so the students list is empty
-            if(coursePS.getRegStudents().isEmpty()){
-                this.complete(true);
-            }else{
-                this.complete(false);
+        if(actions.isEmpty()){
+            this.complete(true);
+        }else{
+            then(actions,()->{
+                //if each of unregistering succeeded so the students list is empty
+                if(coursePS.getRegStudents().isEmpty()){
+                    this.complete(true);
+                }else{
+                    this.complete(false);
+                }
+            });
+            for (Action<Boolean> action: actions)
+            {
+                this.sendMessage(action, this.actorId, new CoursePrivateState());
             }
-        });
-        for (Action<Boolean> action: actions)
-        {
-            this.sendMessage(action, this.actorId, new CoursePrivateState());
         }
     }
 }
