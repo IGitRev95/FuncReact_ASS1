@@ -7,10 +7,12 @@ import bgu.atd.a1.sim.Warehouse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * sent by department actor for acquiring computer from warehouse
+ */
 public class GetComputerAction extends Action<Computer> {
-    private String type;
+    private final String type;
 
     public GetComputerAction(String type) {
         this.setActionName("Get Computer");
@@ -19,7 +21,7 @@ public class GetComputerAction extends Action<Computer> {
 
     @Override
     protected void start() {
-        //TODO: TEST
+        // <computers - in current use> map
         HashMap<Computer,Boolean> warehouseComputerMap = ((Warehouse)this.actorState).getComputersUsage();
         for(Computer comp: warehouseComputerMap.keySet()){
             if(!warehouseComputerMap.get(comp)){
@@ -30,6 +32,7 @@ public class GetComputerAction extends Action<Computer> {
                 }
             }
         }
+        // the procedure must end with computer acquisition - so in case of no available computers it will self call again
         GetComputerAction retry = new GetComputerAction(this.type);
         List<Action<Computer>> dependencies = new ArrayList<>();
         dependencies.add(retry);
