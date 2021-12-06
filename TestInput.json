@@ -55,7 +55,7 @@
     {
       "Action": "Participate In Course",
       "Student": "123456789",
-      "Course": "Data Structures",
+      "Course": "Intro To CS",
       "Grade": ["77"]
     },
 
@@ -95,7 +95,7 @@
       "Department": "CS",
       "Students": ["123456789","5959595959"],
       "Computer": "A",
-      "Conditions" : ["SPL", "Data Structures"]
+      "Conditions" : ["Intro To CS", "Data Structures"]
     }
   ]
 }
