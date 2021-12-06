@@ -7,9 +7,16 @@ import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Closes a course. Should unregister registered students and remove the course from the department courses' list
+ * and the grade-sheets of the students. The number of available spaces of the closed
+ * course should be updated to -1. DO NOT remove its actor. After closing the course, all requests for
+ * registration should be denied.
+ * Should be initially submitted to the department's actor
+ */
 public class CloseCourseAction extends Action<Boolean> {
 
-    private String courseName;
+    private final String courseName;
 
     public CloseCourseAction(String courseName){
         this.setActionName("Close Course");
