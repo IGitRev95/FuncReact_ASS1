@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class PrivateState implements Serializable {
 	
 	// holds the actions' name what were executed
-	private List<String> history = new ArrayList<>();
+	private List<String> history = new ArrayList<>(); // actions log
 
 	public List<String> getLogger(){
 		return history;
@@ -21,11 +21,10 @@ public abstract class PrivateState implements Serializable {
 	/**
 	 * add an action to the records
 	 *  
-	 * @param actionName
+	 * @param actionName - the new record
 	 */
 	public void addRecord(String actionName){
 		history.add(actionName);
-//		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 	
 	
