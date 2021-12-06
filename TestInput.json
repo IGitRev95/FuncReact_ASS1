@@ -73,7 +73,8 @@
     },
     {
       "Action": "Close Course",
-      "Course": "SPL"
+      "Course": "SPL",
+      "Department": "CS"
     }
   ],
   "Phase 3": [
