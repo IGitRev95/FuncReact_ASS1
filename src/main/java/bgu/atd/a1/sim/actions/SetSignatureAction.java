@@ -15,6 +15,7 @@ public class SetSignatureAction extends Action<Boolean> {
     @Override
     protected void start() {
         StudentPrivateState studentPS = (StudentPrivateState) this.actorState;
+        studentPS.setSignature(this.signature);
         complete(true);
     }
 }
