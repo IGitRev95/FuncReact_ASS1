@@ -4,7 +4,6 @@ import bgu.atd.a1.Action;
 import bgu.atd.a1.sim.privateStates.CoursePrivateState;
 import bgu.atd.a1.sim.privateStates.DepartmentPrivateState;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +28,7 @@ public class OpenNewCourseAction extends Action<Boolean> {
         if(!departmentCourseList.contains(this.courseName)){
             departmentCourseList.add(this.courseName);
             CoursePrivateState newCoursePS = new CoursePrivateState();
+            // New course is a department function - for proper creation and initializations of Course actor
             NewCourseInitAction newCourseInitAction = new NewCourseInitAction(this.availableSpots, this.prequisites);
             sendMessage(newCourseInitAction,this.courseName, newCoursePS);
             this.complete(true);
