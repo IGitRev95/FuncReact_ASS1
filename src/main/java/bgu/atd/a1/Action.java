@@ -47,16 +47,15 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
-       if (firstRun)
+       if (firstRun) // first run -> start()
        {
-           System.out.println("running a task - " + this.getActionName());
            this.pool = pool;
            this.actorId = actorId;
            this.actorState = actorState;
            start();
            firstRun = false;
        }
-       else
+       else // re-activating -> a callback is available to be executed
        {
            for (ActionDependencies dependencies : actionsCallbackMap.keySet()) {
                if (dependencies.isAllResolved()) {
@@ -81,17 +80,17 @@ public abstract class Action<R> {
        	ActionDependencies dependencies = new ActionDependencies(actions);
         AtomicBoolean sent = new AtomicBoolean(false);
         for (Action<?> action : actions) {
+            // set a callback behavior for each action result -> if all dependencies resolved re-insert to actor action queue
             action.getResult().subscribe(() -> {
                 if (dependencies.isAllResolved())
                 {
-                    if(sent.compareAndSet(false,true)){
+                    if(sent.compareAndSet(false,true)){ // cas operation for only one re-insertion
                     sendMessage(this, this.actorId, this.actorState);
                     }
                 }
             });
         }
         actionsCallbackMap.put(dependencies, callback);
-   
     }
 
     /**
