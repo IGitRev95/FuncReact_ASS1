@@ -30,9 +30,9 @@ public class Simulator {
 	private static HashMap<String,PrivateState> actorTPRecords = null;
 
 	/**
-	* Begin the simulation Should not be called before attachActorThreadPool()
-	*/
-    public static void start() {
+	 * Begin the simulation Should not be called before attachActorThreadPool()
+	 */
+	public static void start() {
 		try {
 			actorThreadPool.start();
 			ParsedJson parsedJson = gson.fromJson(new FileReader(inputJsonPath), ParsedJson.class);
@@ -57,7 +57,7 @@ public class Simulator {
 		}
 		//extracting records
 		actorTPRecords=end();
-    }
+	}
 
 	private static void runPhase1(ParsedJson parsedJson)
 	{
@@ -144,7 +144,7 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.department,new CoursePrivateState());
 				break;
 			case "Add Spaces":
-				action =  new OpenNewPlacesInACourseAction(rawAction.space);
+				action =  new OpenNewPlacesInACourseAction(rawAction.newSpace); // @newSpace name was in accurate - name changing
 				actorThreadPool.submit(action,rawAction.course,new CoursePrivateState());
 				break;
 			case "Administrative Check":
@@ -152,26 +152,26 @@ public class Simulator {
 				actorThreadPool.submit(action,rawAction.department,new DepartmentPrivateState());
 				break;
 			case "Register With Preferences":
-				action =  new RegisterWithPreferencesAction(new ArrayList<>(Arrays.asList(rawAction.courses)),new ArrayList<>(Arrays.asList(rawAction.grade)));
+				action =  new RegisterWithPreferencesAction(new ArrayList<>(Arrays.asList(rawAction.preferences)),new ArrayList<>(Arrays.asList(rawAction.grade))); // @ Preferences name was in accurate - name changing
 				actorThreadPool.submit(action,rawAction.student,new StudentPrivateState());
 				break;
 		}
 		return action;
 	}
-	
+
 	/**
-	* attach an ActorThreadPool to the Simulator, this ActorThreadPool will be used to run the simulation
-	* 
-	* @param myActorThreadPool - the ActorThreadPool which will be used by the simulator
-	*/
+	 * attach an ActorThreadPool to the Simulator, this ActorThreadPool will be used to run the simulation
+	 *
+	 * @param myActorThreadPool - the ActorThreadPool which will be used by the simulator
+	 */
 	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool){
 		actorThreadPool=myActorThreadPool;
 	}
-	
+
 	/**
-	* shut down the simulation
-	* returns list of private states
-	*/
+	 * shut down the simulation
+	 * returns list of private states
+	 */
 	public static HashMap<String,PrivateState> end(){
 		try {
 			actorThreadPool.shutdown();
@@ -238,6 +238,8 @@ public class Simulator {
 		private String course;
 		@SerializedName("Space")
 		private Integer space;
+		@SerializedName("Number")
+		private Integer newSpace;
 		@SerializedName("Prerequisites")
 		private String[] prerequisites;
 		@SerializedName("Student")
@@ -250,6 +252,8 @@ public class Simulator {
 		private String[] students;
 		@SerializedName("Courses")
 		private String[] courses;
+		@SerializedName("Preferences")
+		private String[] preferences;
 		@SerializedName("Computer")
 		private String type;
 	}

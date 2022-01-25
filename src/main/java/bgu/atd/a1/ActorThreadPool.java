@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * methods
  */
 public class ActorThreadPool {
-	
+
 	private final ConcurrentHashMap<String,PrivateState> actors = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String,ActorActionsQueue> actorsActionQueues = new ConcurrentHashMap<>();
 	private final Object threadWaitObject;
@@ -49,7 +49,7 @@ public class ActorThreadPool {
 	public Map<String, PrivateState> getActors(){
 		return this.actors;
 	}
-	
+
 	/**
 	 * getter for actor's private state
 	 * @param actorId actor's id
@@ -108,6 +108,6 @@ public class ActorThreadPool {
 	}
 
 	private boolean addNewActor(String actorID,PrivateState actorState){
-		return (this.actors.putIfAbsent(actorID, actorState) == null) & (this.actorsActionQueues.putIfAbsent(actorID, new ActorActionsQueue()) == null);
+		return (this.actorsActionQueues.putIfAbsent(actorID, new ActorActionsQueue()) == null)&(this.actors.putIfAbsent(actorID, actorState) == null)  ; // TODO: Fixed by switching places around "&"
 	}
 }
